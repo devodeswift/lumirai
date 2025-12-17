@@ -23,7 +23,7 @@ struct ExpressionView: View {
     var body: some View {
         ZStack {
             backgroundColor()
-            VStack {
+            VStack(alignment: .center) {
                 Text("LUMIRAi")
                     .font(AppFonts.playFairDisplayReg(size: 24))
                     .foregroundColor(.white)
@@ -40,6 +40,7 @@ struct ExpressionView: View {
                         Color(hex: "0A0F16").opacity(0.10)
                     ]
                 ))
+                    .frame(width: 200, height: 200)
                     .padding(.top, 50)
                     .offset(y: float ? -10 : 10)        // naik turun
                     .animation(
