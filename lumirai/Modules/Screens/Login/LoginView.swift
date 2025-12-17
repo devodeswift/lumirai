@@ -9,13 +9,15 @@ import Foundation
 import SwiftUI
 
 struct LoginView: View {
+    @State private var goToSubscription: Bool = false
     var body: some View {
         ZStack {
             GradientBackgroundView()
                 .ignoresSafeArea()
             Color.clear
                 .safeAreaInset(edge: .top) {
-                    headerView()
+                    //headerView()
+                    HeaderView()
                         .padding(.top, 16)
                 }
             VStack(spacing:20){
@@ -35,6 +37,7 @@ struct LoginView: View {
                 )
                 Button(action : {
                         // with apple
+                    goToSubscription = true
                 })
                 {
                     HStack{
@@ -66,6 +69,7 @@ struct LoginView: View {
                 
                 Button(action : {
                         // goo
+                    goToSubscription = true
                 })
                 {
                     HStack{
@@ -97,6 +101,10 @@ struct LoginView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .padding(.horizontal, 16)
         }
+        .navigationDestination(isPresented: $goToSubscription) {
+            Subscription()
+        }
+        .navigationBarBackButtonHidden(true)
     }
     
     func headerView() -> some View {

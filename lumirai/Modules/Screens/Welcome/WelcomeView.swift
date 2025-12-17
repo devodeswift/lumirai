@@ -70,7 +70,8 @@ struct WelcomeView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .navigationDestination(isPresented: $goToExpression) {
-                ExpressionView()
+//                ExpressionView()
+                LoginView()
             }
             .navigationBarBackButtonHidden(true)
             .onAppear {
