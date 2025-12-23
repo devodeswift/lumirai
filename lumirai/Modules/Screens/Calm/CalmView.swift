@@ -30,8 +30,13 @@ struct CalmView: View{
                     .font(AppFonts.playFairDisplayReg(size: 24))
                     .foregroundColor(.white)
                     .padding(.top, 10)
-//                Spacer()
+
+                Text("Slow inhale")
+                    .font(AppFonts.nunito(size: 26))
+                    .foregroundColor(.white)
+                    .padding(.top, 100)
                 halo()
+                    .padding(.top, 10)
                 Spacer()
             }
         }
@@ -56,16 +61,13 @@ struct CalmView: View{
                 startRadius: 0,
                 endRadius: 500
             )
-            .opacity(breatheState ? 1 : 0) // Soft Fade Entry (1.5s)
-            .animation(.easeInOut(duration: 1.5), value: breatheState)
+            
             RadialGradient(
                 colors: [Color(hex: "1E546F").opacity(0.4), .clear],
                 center: .top,
                 startRadius: 0,
                 endRadius: 500
             )
-            .opacity(breatheState ? 1 : 0) // Soft Fade Entry (1.5s)
-                .animation(.easeInOut(duration: 1.5), value: breatheState)
         }
     }
     
@@ -100,7 +102,7 @@ struct CalmView: View{
                             
                         ])
             )
-            .frame(width: breatheState || progress == 1.0 ? 300 : 150, height: breatheState || progress == 1.0 ? 300 : 150)
+            .frame(width: breatheState || progress == 1.0 ? 200 : 150, height: breatheState || progress == 1.0 ? 200 : 150)
             
             
             Circle()
@@ -108,7 +110,7 @@ struct CalmView: View{
                 .stroke(style: StrokeStyle(lineWidth: 2, lineCap: .round))
                 .foregroundColor(.white.opacity(0.5))
                 .rotationEffect(.degrees(-90))
-                .frame(width: 320, height: 320)
+                .frame(width: 220, height: 220)
             
             Circle()
                 .trim(from: 0, to: progress)
@@ -129,7 +131,7 @@ struct CalmView: View{
                     )
                 )
                 .rotationEffect(.degrees(-90))
-                .frame(width: 320, height: 320)
+                .frame(width: 220, height: 220)
         }
     }
     

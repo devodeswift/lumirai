@@ -23,31 +23,55 @@ struct ExpressionView: View {
     var body: some View {
         ZStack {
             backgroundColor()
+            StaticNebulusHalo()
+                .frame(width: 400, height: 400)
+//                .background(.blue)
+//                .scaleEffect(isListening ? haloPulse : 1)
+//                .animation(.easeInOut(duration: 1), value: isListening)
+            
             VStack(alignment: .center) {
                 Text("LUMIRAi")
                     .font(AppFonts.playFairDisplayReg(size: 24))
                     .foregroundColor(.white)
                     .padding(.top, 10)
 //                hallowedCircle()
-                HalloView(config: HaloViewModel(
-                    colors: [
-                        Color(hex: "E6F1FF").opacity(0.92),
-                        Color(hex: "B6D6FF").opacity(0.82),
-                        Color(hex: "7FAEFF").opacity(0.74),
-                        Color(hex: "6B7CFF").opacity(0.70),
-                        Color(hex: "7A63C8").opacity(0.62),
-                        Color(hex: "2B2F3F").opacity(0.55),
-                        Color(hex: "0A0F16").opacity(0.10)
-                    ]
-                ))
-                    .frame(width: 200, height: 200)
-                    .padding(.top, 50)
-                    .offset(y: float ? -10 : 10)        // naik turun
-                    .animation(
-                        Animation.easeInOut(duration: 2)
-                            .repeatForever(autoreverses: true),
-                        value: float
-                    )
+//                HalloView(config: HaloViewModel(
+//                    colors: [
+//                        Color(hex: "E6F1FF").opacity(0.92),
+//                        Color(hex: "B6D6FF").opacity(0.82),
+//                        Color(hex: "7FAEFF").opacity(0.74),
+//                        Color(hex: "6B7CFF").opacity(0.70),
+//                        Color(hex: "7A63C8").opacity(0.62),
+//                        Color(hex: "2B2F3F").opacity(0.55),
+//                        Color(hex: "0A0F16").opacity(0.10)
+//                    ]
+//                ))
+//                    .frame(width: 200, height: 200)
+//                    .padding(.top, 50)
+//                    .scaleEffect(isListening ? haloPulse : 1)
+//                .animation(.easeInOut(duration: 1), value: isListening)
+//                    .offset(y: float ? -10 : 10)        // naik turun
+//                    .animation(
+//                        Animation.easeInOut(duration: 2)
+//                            .repeatForever(autoreverses: true),
+//                        value: float
+//                    )
+//                SpiralHaloView()
+//                SpiralHaloView(
+//                    size: 200,
+//                    lineCount: 100,
+//                    color: Color(hex: "6FA8FF")
+//                )
+//                .blur(radius: 0.5)
+//                SpiralHaloFlowView(
+//                    size: 200,
+//                    lineCount: 100,
+//                    color: Color(hex: "5FA8FF")
+//                )
+//                EnergyHaloView()
+//                .blur(radius: 0.8)
+//                .shadow(color: Color(hex: "5FA8FF").opacity(0.35), radius: 24)
+                Spacer()
                 textScroll()
                 bottomView()
                     .frame(maxWidth: .infinity, maxHeight: 40)
