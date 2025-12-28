@@ -32,3 +32,7 @@ struct GradientBackgroundView: View {
         }
     }
 }
+
+#Preview {
+    GradientBackgroundView()
+}
