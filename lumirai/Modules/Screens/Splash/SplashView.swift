@@ -14,32 +14,35 @@ struct SplashView: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                AuroraBackgroundView(
-                    baseColor: Color("#0A0F16"), topLeftColor: Color("#00C4B4"), topRightColor: Color("#F5E9C5"), bottomColor: Color("#5648A8")
-                )
-                VStack {
-                    Spacer()
-                    Text("LUMIRAi")
-                        .font(AppFonts.playFairDisplayReg(size: 28))
-                        .foregroundColor(Color("#EAF6F5"))
-                    Spacer()
-                    Text("Version \(AppInfo.shared.getAppVersion)")
-                        .font(AppFonts.playFairDisplayReg(size: 14))
-                        .foregroundColor(Color("#EAF6F5"))
+            BaseView(viewModel: viewModel) { vm in
+                ZStack {
+                    AuroraBackgroundView(
+                        baseColor: Color("#0A0F16"), topLeftColor: Color("#00C4B4"), topRightColor: Color("#F5E9C5"), bottomColor: Color("#5648A8")
+                    )
+                    VStack {
+                        Spacer()
+                        Text(vm.textLogo)
+                            .font(AppFonts.playFairDisplayReg(size: 28))
+                            .foregroundColor(Color("#EAF6F5"))
+                        Spacer()
+                        Text(vm.textVersion)
+                            .font(AppFonts.playFairDisplayReg(size: 14))
+                            .foregroundColor(Color("#EAF6F5"))
+                    }
+                    .padding()
                 }
-                .padding()
-            }.onChange(of: viewModel.shouldNavigate){
-                shouldNavigate in
-                if shouldNavigate {
-                    navigateToHome = true
-                    
+                .onChange(of: vm.shouldNavigate){
+                    shouldNavigate in
+                    if shouldNavigate {
+                        navigateToHome = true
+                    }
                 }
-            }
-            .navigationDestination(isPresented: $navigateToHome) {
-                WelcomeView()
+                .navigationDestination(isPresented: $navigateToHome) {
+                    WelcomeView()
+                }
             }
         }
+        
     }
 }
 

@@ -8,19 +8,23 @@
 import Foundation
 import Combine
 
-class SplashViewModel: ObservableObject {
+class SplashViewModel: BaseViewModel {
     @Published var shouldNavigate = false
-    private var cancellable: AnyCancellable?
+    @Published var textLogo: String = "LUMIRAi"
+    @Published var textVersion: String = "Version \(AppInfo.shared.getAppVersion)"
     
-    init() {
+    
+    override func start() {
+        super.start()
         startTimer()
     }
     
     private func startTimer(){
-        cancellable = Just(())
+        Just(())
             .delay(for: .seconds(3), scheduler: RunLoop.main)
-            .sink{ [weak self] _ in
+            .sink { [weak self] _ in
                 self?.shouldNavigate = true
-        }
+            }
+            .store(in: &cancellables)
     }
 }
