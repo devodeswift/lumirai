@@ -26,8 +26,8 @@ struct ExpressionView: View {
             StaticNebulusHalo()
                 .frame(width: 400, height: 400)
 //                .background(.blue)
-//                .scaleEffect(isListening ? haloPulse : 1)
-//                .animation(.easeInOut(duration: 1), value: isListening)
+                .scaleEffect(isListening ? haloPulse : 1)
+                .animation(.easeInOut(duration: 1), value: isListening)
             
             VStack(alignment: .center) {
                 Text("LUMIRAi")
