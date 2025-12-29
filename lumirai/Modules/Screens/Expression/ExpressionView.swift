@@ -24,7 +24,7 @@ struct ExpressionView: View {
         ZStack {
             backgroundColor()
             StaticNebulusHalo()
-                .frame(width: 400, height: 400)
+                .frame(width: 150, height: 150)
 //                .background(.blue)
                 .scaleEffect(isListening ? haloPulse : 1)
                 .animation(.easeInOut(duration: 1), value: isListening)
