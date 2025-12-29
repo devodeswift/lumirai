@@ -33,8 +33,8 @@ struct GlassButtonView: View {
                 .foregroundColor(Color("#EAF6F5"))
                 .padding(.vertical, 14)
                 .padding(.horizontal, 26)
-                .frame(minWidth: 160)
         }
+        .frame(maxWidth: .infinity)
         .background(
             ZStack {
                 Color.black.opacity(0.18)
@@ -48,11 +48,9 @@ struct GlassButtonView: View {
         )
         .overlay(
             ZStack {
-                // (C) Border 0.5–0.8 px, white 20%
                 RoundedRectangle(cornerRadius: cornerRadius)
                     .stroke(Color.white.opacity(0.20), lineWidth: 0.7)
                             
-                // (B) Inner shadow 1–2 px
                 RoundedRectangle(cornerRadius: cornerRadius)
                     .stroke(Color.white.opacity(0.12), lineWidth: 1)
                     .blur(radius: 1.6)
@@ -64,5 +62,12 @@ struct GlassButtonView: View {
         .shadow(color: Color.white.opacity(0.13), radius: 2, x: 0, y: 0)
         .compositingGroup()
         .padding(8)
+        
+    }
+}
+
+#Preview {
+    GlassButtonView(title: "test"){
+        
     }
 }
