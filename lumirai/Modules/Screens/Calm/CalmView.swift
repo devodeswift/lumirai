@@ -20,10 +20,9 @@ struct CalmView: View{
             Color(hex: "C9D6E8")  // Pale Blue
         ]
     @State private var progress: CGFloat = 0.0
-        
-        let timer = Timer.publish(every: 0.05, on: .main, in: .common).autoconnect()
-        @State private var timeElapsed: Double = 0
-        let totalDuration: Double = 30
+    var timer = Timer.publish(every: 0.05, on: .main, in: .common)
+    @State private var timeElapsed: Double = 0
+    let totalDuration: Double = 60
     
     @StateObject private var calmviewModel = CalmViewModel()
     
@@ -118,7 +117,6 @@ struct CalmView: View{
             withAnimation {
                 progress = CGFloat(timeElapsed / totalDuration)
             }
-            AppLogger.shared.log(" cek progress : \(breatheState) : \(progress)")
         }
     }
     
@@ -135,29 +133,27 @@ struct CalmView: View{
                         .foregroundColor(.white)
                         .padding(.top, 10)
                     Spacer()
+                    Text("You paused. You didn’t fail.")
+                        .font(AppFonts.nunito(size: 20))
+                        .foregroundColor(.white)
                     if isStart {
-                        Text("Intruction")
-                            .font(AppFonts.nunito(size: 24))
-                            .foregroundColor(.white)
-                        
-                        .frame(width: .infinity)
-                        .padding(.horizontal, 10)
                         TimerLine(
                             progress: progress,
                             color: Color(hex: "C9D6E8")
                         )
                         .frame(height: 2)
                     } else{
-                        GlassButtonView(title: "Start"){
+                        GlassButtonView(title: "Breathe 1 min"){
                             isStart.toggle()
-                        }
+                            startBreathingCycle()
+                            timer.connect()
+                        }.padding(.horizontal, 10)
                     }
                 }
                 .animation(nil, value: breatheState)
             }
             .navigationBarBackButtonHidden(true)
             .onAppear {
-                startBreathingCycle()
                 animate = true
             }
             .onReceive(timer) { _ in

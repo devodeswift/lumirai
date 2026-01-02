@@ -54,6 +54,7 @@ struct WelcomeView: View {
                         GlassButtonView(title: vm.textButton) {
                             goToLogin = true
                         }
+                        .frame(width: 180)
                         .scaleEffect(animate ? 1.02 : 0.98)
                         .opacity(animate ? 1.02 : 0.98)
                         .animation(
