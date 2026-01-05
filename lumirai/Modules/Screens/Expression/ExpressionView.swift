@@ -12,6 +12,7 @@ struct ExpressionView: View {
     @StateObject private var viewmodel = ExpressionViewModel()
     @FocusState private var isFocused : Bool
     @State private var isListening : Bool = false
+    @State private var animate: Bool = false
     
     @State private var float = false
     @State private var goToCalm = false
@@ -20,8 +21,8 @@ struct ExpressionView: View {
             ZStack {
                 GradientBackgroundView()
                     .ignoresSafeArea()
-                StaticNebulusHalo()
-                    .frame(width: 150, height: 150)
+                bigHaloBreathing(vm : viewmodel)
+                    .frame(width: 300, height: 300)
                     .scaleEffect(isListening ? vm.haloPulse : 1)
                     .animation(.easeInOut(duration: 1), value: isListening)
                 
@@ -40,6 +41,9 @@ struct ExpressionView: View {
             .onAppear {
                 isAnimating = true
                 float = true
+                if !isListening {
+                    animate = true
+                }
             }
             .navigationBarBackButtonHidden(true)
             .navigationDestination(isPresented: $goToCalm) {
@@ -54,8 +58,12 @@ struct ExpressionView: View {
                 AppLogger.shared.log("test => \(active)")
                 if active {
                     vm.pulseManager.start()
+                    vm.speech.startListening()
+                    animate = false
                 } else {
+                    animate = true
                     vm.pulseManager.stop()
+                    vm.speech.stopListening()
                 }
             }
             .onReceive(vm.pulseManager.$amplitude) { value in
@@ -90,15 +98,32 @@ struct ExpressionView: View {
                     .foregroundColor(.white.opacity(0.8))
                     .frame(width: 50, height: 50)
                 }
-                    .transition(.move(edge: .bottom).combined(with: .opacity))
-                    .background(.ultraThinMaterial)
-                    .overlay(
-                        Capsule()
-                            .stroke(Color.white.opacity(0.20), lineWidth: 1)
-                    )
-                    .shadow(color: Color.blue.opacity(0.35), radius: 25)    // glow
-                    .shadow(color: Color.purple.opacity(0.25), radius: 40)
-                    .clipShape(Capsule())
+                .background(
+                    ZStack {
+                        Color.black.opacity(0.18)
+                            .blur(radius: 8)
+                            .cornerRadius(10)
+                        BlurView(style: .systemUltraThinMaterialDark)
+                            .cornerRadius(10)
+                            .opacity(1.0)
+                    }
+                )
+                .overlay(
+                    ZStack {
+                        RoundedRectangle(cornerRadius: .infinity)
+                            .stroke(Color.white.opacity(0.20), lineWidth: 0.7)
+                                    
+                        RoundedRectangle(cornerRadius: .infinity)
+                            .stroke(Color.white.opacity(0.12), lineWidth: 1)
+                            .blur(radius: 1.6)
+                            .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                            .opacity(0.6)
+                    }
+                )
+                .clipShape(RoundedRectangle(cornerRadius: .infinity, style: .continuous))
+                .shadow(color: Color.white.opacity(0.13), radius: 2, x: 0, y: 0)
+                .compositingGroup()
+                .padding(8)
                 
             }
             
@@ -107,31 +132,39 @@ struct ExpressionView: View {
             Button(action: {
                 withAnimation(.spring(response: 0.35, dampingFraction: 0.82)) {
                     isListening.toggle()
-                        
                 }
-                
-                
-                if isListening {
-                    vm.speech.startListening()
-                } else {
-                    vm.speech.stopListening()
-                }
-                
             }) {
                 Image(systemName: !isListening ? "mic.fill" : "square.fill")
                     .font(.system(size: 24, weight: .medium))
                     .foregroundColor(.white.opacity(0.8))
                     .frame(width: 50, height: 50)
             }
-                .transition(.move(edge: .leading).combined(with: .opacity))
-                .background(.ultraThinMaterial)
-                .overlay(
-                    Capsule()
-                        .stroke(Color.white.opacity(0.20), lineWidth: 1)
-                )
-                .shadow(color: Color.blue.opacity(0.35), radius: 25)    // glow
-                .shadow(color: Color.purple.opacity(0.25), radius: 40)
-                .clipShape(Capsule())
+            .background(
+                ZStack {
+                    Color.black.opacity(0.18)
+                        .blur(radius: 8)
+                        .cornerRadius(10)
+                    BlurView(style: .systemUltraThinMaterialDark)
+                        .cornerRadius(10)
+                        .opacity(1.0)
+                }
+            )
+            .overlay(
+                ZStack {
+                    RoundedRectangle(cornerRadius: .infinity)
+                        .stroke(Color.white.opacity(0.20), lineWidth: 0.7)
+                                
+                    RoundedRectangle(cornerRadius: .infinity)
+                        .stroke(Color.white.opacity(0.12), lineWidth: 1)
+                        .blur(radius: 1.6)
+                        .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                        .opacity(0.6)
+                }
+            )
+            .clipShape(RoundedRectangle(cornerRadius: .infinity, style: .continuous))
+            .shadow(color: Color.white.opacity(0.13), radius: 2, x: 0, y: 0)
+            .compositingGroup()
+            .padding(8)
             Spacer()
             if !isListening {
                 Button(action: {
@@ -142,15 +175,32 @@ struct ExpressionView: View {
                     .foregroundColor(.white.opacity(0.8))
                     .frame(width: 50, height: 50)
                 }
-                .transition(.move(edge: .bottom).combined(with: .opacity))
-                .background(.ultraThinMaterial)
-                .overlay(
-                    Capsule()
-                            .stroke(Color.white.opacity(0.20), lineWidth: 1)
+                .background(
+                    ZStack {
+                        Color.black.opacity(0.18)
+                            .blur(radius: 8)
+                            .cornerRadius(10)
+                        BlurView(style: .systemUltraThinMaterialDark)
+                            .cornerRadius(10)
+                            .opacity(1.0)
+                    }
                 )
-                .shadow(color: Color.blue.opacity(0.35), radius: 25)    // glow
-                .shadow(color: Color.purple.opacity(0.25), radius: 40)
-                .clipShape(Capsule())
+                .overlay(
+                    ZStack {
+                        RoundedRectangle(cornerRadius: .infinity)
+                            .stroke(Color.white.opacity(0.20), lineWidth: 0.7)
+                                    
+                        RoundedRectangle(cornerRadius: .infinity)
+                            .stroke(Color.white.opacity(0.12), lineWidth: 1)
+                            .blur(radius: 1.6)
+                            .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                            .opacity(0.6)
+                    }
+                )
+                .clipShape(RoundedRectangle(cornerRadius: .infinity, style: .continuous))
+                .shadow(color: Color.white.opacity(0.13), radius: 2, x: 0, y: 0)
+                .compositingGroup()
+                .padding(8)
             }
             
             
@@ -202,6 +252,51 @@ struct ExpressionView: View {
         }
         .frame(maxWidth: .infinity ,maxHeight: .infinity)
     }
+    
+    func bigHaloBreathing(vm: ExpressionViewModel) -> some View {
+        
+        ZStack {
+            if isListening {
+                Circle()
+                    .fill(
+                        RadialGradient(
+                            gradient: Gradient(colors: [
+                                Color(hex: "E6F0FF"),
+                                Color(hex: "E6F0FF").opacity(0.25)
+                            ]),
+                            center: .center,
+                            startRadius: 0,
+                            endRadius: 260
+                        )
+                    )
+                    .frame(maxWidth: .infinity, maxHeight:.infinity)
+                    .blur(radius: 70)
+                    .opacity( 0.9)
+            } else {
+                Circle()
+                    .fill(
+                        RadialGradient(
+                            gradient: Gradient(colors: [
+                                Color(hex: "E6F0FF"),
+                                Color(hex: "E6F0FF").opacity(0.25)
+                            ]),
+                            center: .center,
+                            startRadius: 0,
+                            endRadius: 260
+                        )
+                    )
+                    .frame(maxWidth: .infinity, maxHeight:.infinity)
+                    .blur(radius: 70)
+                    .scaleEffect(animate ? 1.05 : 0.95)
+                    .opacity(animate ? 0.9 : 0.4)
+                    .animation(
+                        Animation.easeInOut(duration: 6.5)
+                            .repeatForever(autoreverses: true),
+                        value: animate
+                    )
+            }
+        }
+    }
 }
 
 
@@ -211,3 +306,12 @@ struct ExpressionView: View {
     ExpressionView()
 }
 
+extension Animation {
+    func `repeat`(while expression: Bool, autoreverses: Bool = true) -> Animation {
+        if expression {
+            return self.repeatForever(autoreverses: autoreverses)
+        } else {
+            return self
+        }
+    }
+}

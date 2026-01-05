@@ -14,8 +14,8 @@ struct StaticNebulusHalo: View {
                 .fill(
                     RadialGradient(
                         gradient: Gradient(colors: [
-                            Color(hex: "6FA8FF").opacity(0.25),
-                            Color(hex: "6FA8FF").opacity(0.08),
+                            Color(hex: "E6F0FF").opacity(0.25),
+                            Color(hex: "E6F0FF").opacity(0.08),
                             .clear
                         ]),
                         center: .init(x: 0.46, y: 0.44), // subtle asymmetry
@@ -30,8 +30,8 @@ struct StaticNebulusHalo: View {
                 .fill(
                     RadialGradient(
                         gradient: Gradient(colors: [
-                            Color(hex: "E6F1FF").opacity(0.95),
-                            Color(hex: "A3CCFF").opacity(0.55),
+                            Color(hex: "#E6F0FF").opacity(0.95),
+                            Color(hex: "E6F0FF").opacity(0.55),
                             .clear
                         ]),
                         center: .init(x: 0.52, y: 0.48),
