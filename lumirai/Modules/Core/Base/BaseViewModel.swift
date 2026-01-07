@@ -9,11 +9,12 @@ import Foundation
 import SwiftUI
 import Combine
 
-class BaseViewModel: ObservableObject {
+class BaseViewModel: NSObject, ObservableObject {
     
     var cancellables = Set<AnyCancellable>()
     
-    init(){
+    override init(){
+        super.init()
         start()
     }
     
