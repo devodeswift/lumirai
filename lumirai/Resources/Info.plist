@@ -7,9 +7,20 @@
 		<string>Nunito-Regular.ttf</string>
 		<string>PlayfairDisplay-Regular.ttf</string>
 	</array>
-    <key>NSMicrophoneUsageDescription</key>
-    <string>This app uses the microphone to visualize your voice and respond emotionally.</string>
-    <key>NSSpeechRecognitionUsageDescription</key>
-    <string>This app needs access to convert your voice to text.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app uses the microphone to visualize your voice and respond emotionally.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>This app needs access to convert your voice to text.</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.446613217760-o7okevjmupaa0o8bipg1a5vetgbcglf8</string>
+			</array>
+		</dict>
+	</array>
+    <key>GIDClientID</key>
+    <string>446613217760-o7okevjmupaa0o8bipg1a5vetgbcglf8.apps.googleusercontent.com</string>
 </dict>
 </plist>

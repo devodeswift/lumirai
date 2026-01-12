@@ -16,8 +16,8 @@ struct WelcomeView: View {
     @State private var showSubtitle: Bool = false
     @State private var showParticles = false
     @State private var showButton = false
-    @State private var goToLogin = false
     @StateObject private var viewModel = WelcomeViewModel()
+    @EnvironmentObject private var router: Router
     
     
     var body: some View {
@@ -52,7 +52,8 @@ struct WelcomeView: View {
                         .frame(height: 98)
                     if showButton {
                         GlassButtonView(title: vm.textButton) {
-                            goToLogin = true
+                            router.push(.login)
+                            
                         }
                         .frame(width: 180)
                         .scaleEffect(animate ? 1.02 : 0.98)
@@ -68,9 +69,9 @@ struct WelcomeView: View {
                 .padding(.horizontal, 2)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .navigationDestination(isPresented: $goToLogin) {
-                LoginView()
-            }
+//            .navigationDestination(isPresented: $goToLogin) {
+//                LoginView()
+//            }
             .navigationBarBackButtonHidden(true)
             .onAppear {
                 
@@ -151,4 +152,5 @@ struct WelcomeView: View {
 
 #Preview {
     WelcomeView()
+        .environmentObject(Router())
 }

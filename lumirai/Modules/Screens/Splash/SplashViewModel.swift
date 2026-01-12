@@ -7,11 +7,12 @@
 
 import Foundation
 import Combine
+import SwiftUI
 
 class SplashViewModel: BaseViewModel {
-    @Published var shouldNavigate = false
     @Published var textLogo: String = "LUMIRAi"
     @Published var textVersion: String = "Version \(AppInfo.shared.getAppVersion)"
+    @Published var isFinished: Bool = false
     
     
     override func start() {
@@ -19,11 +20,11 @@ class SplashViewModel: BaseViewModel {
         startTimer()
     }
     
-    private func startTimer(){
+    func startTimer(){
         Just(())
             .delay(for: .seconds(3), scheduler: RunLoop.main)
             .sink { [weak self] _ in
-                self?.shouldNavigate = true
+                self?.isFinished = true
             }
             .store(in: &cancellables)
     }

@@ -21,10 +21,24 @@ struct ExpressionView: View {
             ZStack {
                 GradientBackgroundView()
                     .ignoresSafeArea()
-                bigHaloBreathing(vm : viewmodel)
-                    .frame(width: 300, height: 300)
-                    .scaleEffect(isListening ? vm.haloPulse : 1)
-                    .animation(.easeInOut(duration: 1), value: isListening)
+                ZStack{
+                    bigHaloBreathing(vm : viewmodel)
+                }
+                .scaleEffect(
+                    isListening
+                            ? vm.haloPulse
+                            : (animate ? 1.8 : 1.0)
+                )
+                .opacity(animate ? 1.0 : 0.97)
+                .animation(
+                    .easeInOut(duration: isListening ? 0.7 : 6.5),
+                    value: isListening
+                )
+                .animation(
+                    .easeInOut(duration: 6.5)
+                        .repeatForever(autoreverses: true),
+                    value: animate
+                )
                 
                 VStack(alignment: .center) {
                     Text(vm.textTitle)
@@ -211,24 +225,25 @@ struct ExpressionView: View {
     func textScroll(vm: ExpressionViewModel) -> some View {
         ScrollViewReader { proxy in
             ScrollView {
-                if text.isEmpty {
-                    Text(vm.textPlaceholder)
-                        .font(AppFonts.nunito(size: 20))
-                        .foregroundColor(.white.opacity(0.4))
-                        .padding(.horizontal, 22)
-                        .padding(.vertical, 18)
-                        .allowsHitTesting(false)
-                }
-                VStack(alignment: .leading) {
+                ZStack(alignment: .topLeading) {
                     TextEditor(text: $text)
                         .font(AppFonts.nunito(size: 20))
                         .foregroundColor(.white)
-                        .padding()
                         .scrollContentBackground(.hidden)
                         .background(Color.clear)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .id("BOTTOM")
                         .focused($isFocused)
+                        .padding(18)
+                    
+                    if text.isEmpty {
+                        Text(vm.textPlaceholder)
+                            .font(AppFonts.nunito(size: 20))
+                            .foregroundColor(.white.opacity(0.4))
+                            .padding(18)
+                            .padding(.top, 6)
+                            .padding(.leading, 3)
+                            .allowsHitTesting(false)
+                    }
                 }
                 .padding(10)
             }
@@ -253,49 +268,85 @@ struct ExpressionView: View {
         .frame(maxWidth: .infinity ,maxHeight: .infinity)
     }
     
-    func bigHaloBreathing(vm: ExpressionViewModel) -> some View {
+//    func bigHaloBreathing(vm: ExpressionViewModel) -> some View {
+//        
+//        ZStack {
+//            if isListening {
+//                Circle()
+//                    .fill(
+//                        RadialGradient(
+//                            gradient: Gradient(colors: [
+//                                Color(hex: "E6F0FF"),
+//                                Color(hex: "E6F0FF").opacity(0.25)
+//                            ]),
+//                            center: .center,
+//                            startRadius: 0,
+//                            endRadius: 260
+//                        )
+//                    )
+//                    .frame(maxWidth: .infinity, maxHeight:.infinity)
+//                    .blur(radius: 70)
+//                    .opacity( 0.9)
+//            } else {
+//                Circle()
+//                    .fill(
+//                        RadialGradient(
+//                            gradient: Gradient(colors: [
+//                                Color(hex: "E6F0FF"),
+//                                Color(hex: "E6F0FF").opacity(0.25)
+//                            ]),
+//                            center: .center,
+//                            startRadius: 0,
+//                            endRadius: 260
+//                        )
+//                    )
+//                    .frame(maxWidth: .infinity, maxHeight:.infinity)
+//                    .blur(radius: 70)
+//                    .scaleEffect(animate ? 1.05 : 0.95)
+//                    .opacity(animate ? 0.9 : 0.4)
+//                    .animation(
+//                        Animation.easeInOut(duration: 6.5)
+//                            .repeatForever(autoreverses: true),
+//                        value: animate
+//                    )
+//            }
+//        }
         
-        ZStack {
-            if isListening {
+        func bigHaloBreathing(vm: ExpressionViewModel) -> some View {
+            ZStack {
                 Circle()
                     .fill(
                         RadialGradient(
                             gradient: Gradient(colors: [
-                                Color(hex: "E6F0FF"),
-                                Color(hex: "E6F0FF").opacity(0.25)
+                                Color(hex: "DCEBFF").opacity(0.08),
+                                Color(hex: "DCEBFF").opacity(0.04),
+                                .clear
                             ]),
-                            center: .center,
-                            startRadius: 0,
-                            endRadius: 260
+                            center: .init(x: 0.46, y: 0.44),
+                            startRadius: 50,
+                            endRadius: 170
                         )
                     )
-                    .frame(maxWidth: .infinity, maxHeight:.infinity)
-                    .blur(radius: 70)
-                    .opacity( 0.9)
-            } else {
+                    .blur(radius: 24)
+                    .blendMode(.screen)
+
                 Circle()
                     .fill(
                         RadialGradient(
                             gradient: Gradient(colors: [
-                                Color(hex: "E6F0FF"),
-                                Color(hex: "E6F0FF").opacity(0.25)
+                                Color(hex: "E6F0FF").opacity(0.22),
+                                Color(hex: "E6F0FF").opacity(0.10),
+                                .clear
                             ]),
-                            center: .center,
+                            center: .init(x: 0.52, y: 0.48),
                             startRadius: 0,
-                            endRadius: 260
+                            endRadius: 95
                         )
                     )
-                    .frame(maxWidth: .infinity, maxHeight:.infinity)
-                    .blur(radius: 70)
-                    .scaleEffect(animate ? 1.05 : 0.95)
-                    .opacity(animate ? 0.9 : 0.4)
-                    .animation(
-                        Animation.easeInOut(duration: 6.5)
-                            .repeatForever(autoreverses: true),
-                        value: animate
-                    )
+                    .blur(radius: 12)
+                    .blendMode(.screen)
             }
-        }
+            
     }
 }
 

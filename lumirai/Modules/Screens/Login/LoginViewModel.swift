@@ -14,8 +14,18 @@ class LoginViewModel: BaseViewModel {
     @Published var textDescLogin3: String = " account"
     @Published var textDescLoginApple: String = "Sign in With Apple"
     @Published var textDescLoginGoogle: String = "Sign in With Google"
+    @Published var route: LoginRoute?
+    
+    let authViewModel: AuthViewModel = AuthViewModel()
     
     override func start() {
-        
+        super.start()
+    }
+    
+    func loginGoogle(){
+        authViewModel.signIn()
+        if authViewModel.isLoggedIn {
+            route = .subscription
+        }
     }
 }

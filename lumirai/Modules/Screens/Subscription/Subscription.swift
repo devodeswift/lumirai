@@ -34,7 +34,9 @@ struct Subscription: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 
                 VStack{
-                    HeaderView()
+                    HeaderView{
+                        
+                    }
                         .padding(.top, 16)
                     Text(vm.textDescSubscription)
                         .font(AppFonts.nunito(size: 24))

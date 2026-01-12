@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		892DFAB72F0BA99F00052634 /* lumirai-watch Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 892DFAAD2F0BA99E00052634 /* lumirai-watch Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		FAA54B5CC06F9F739B7F2001 /* Pods_lumirai.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D3B3B0AE06261960DB77CA4F /* Pods_lumirai.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,8 +36,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		26E3E4D9379416D7CF40E849 /* Pods-lumirai.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-lumirai.release.xcconfig"; path = "Target Support Files/Pods-lumirai/Pods-lumirai.release.xcconfig"; sourceTree = "<group>"; };
+		872D55D6E8F419858AF17E12 /* Pods-lumirai.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-lumirai.debug.xcconfig"; path = "Target Support Files/Pods-lumirai/Pods-lumirai.debug.xcconfig"; sourceTree = "<group>"; };
 		892DFAAD2F0BA99E00052634 /* lumirai-watch Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "lumirai-watch Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		89D8E4012ECEB9CA005AD8A3 /* lumirai.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = lumirai.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D3B3B0AE06261960DB77CA4F /* Pods_lumirai.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_lumirai.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -89,18 +93,29 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FAA54B5CC06F9F739B7F2001 /* Pods_lumirai.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4BA0335916C1621C45DE43B6 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				D3B3B0AE06261960DB77CA4F /* Pods_lumirai.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		89D8E3F82ECEB9CA005AD8A3 = {
 			isa = PBXGroup;
 			children = (
 				89D8E4032ECEB9CA005AD8A3 /* lumirai */,
 				892DFAAE2F0BA99E00052634 /* lumirai-watch Watch App */,
 				89D8E4022ECEB9CA005AD8A3 /* Products */,
+				9C60ADAB8AD347DE4D6FD492 /* Pods */,
+				4BA0335916C1621C45DE43B6 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -111,6 +126,15 @@
 				892DFAAD2F0BA99E00052634 /* lumirai-watch Watch App.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		9C60ADAB8AD347DE4D6FD492 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				872D55D6E8F419858AF17E12 /* Pods-lumirai.debug.xcconfig */,
+				26E3E4D9379416D7CF40E849 /* Pods-lumirai.release.xcconfig */,
+			);
+			path = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -132,8 +156,6 @@
 				892DFAAE2F0BA99E00052634 /* lumirai-watch Watch App */,
 			);
 			name = "lumirai-watch Watch App";
-			packageProductDependencies = (
-			);
 			productName = "lumirai-watch Watch App";
 			productReference = 892DFAAD2F0BA99E00052634 /* lumirai-watch Watch App.app */;
 			productType = "com.apple.product-type.application";
@@ -142,10 +164,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 89D8E40C2ECEB9CB005AD8A3 /* Build configuration list for PBXNativeTarget "lumirai" */;
 			buildPhases = (
+				948D87929AAB7D84790A8AA9 /* [CP] Check Pods Manifest.lock */,
 				89D8E3FD2ECEB9CA005AD8A3 /* Sources */,
 				89D8E3FE2ECEB9CA005AD8A3 /* Frameworks */,
 				89D8E3FF2ECEB9CA005AD8A3 /* Resources */,
 				892DFAB82F0BA99F00052634 /* Embed Watch Content */,
+				58AF52A8A70923610E549579 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -156,8 +180,6 @@
 				89D8E4032ECEB9CA005AD8A3 /* lumirai */,
 			);
 			name = lumirai;
-			packageProductDependencies = (
-			);
 			productName = lumirai;
 			productReference = 89D8E4012ECEB9CA005AD8A3 /* lumirai.app */;
 			productType = "com.apple.product-type.application";
@@ -216,6 +238,52 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		58AF52A8A70923610E549579 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-lumirai/Pods-lumirai-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-lumirai/Pods-lumirai-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-lumirai/Pods-lumirai-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		948D87929AAB7D84790A8AA9 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-lumirai-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		892DFAA92F0BA99E00052634 /* Sources */ = {
@@ -438,13 +506,16 @@
 		};
 		89D8E40D2ECEB9CB005AD8A3 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 872D55D6E8F419858AF17E12 /* Pods-lumirai.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = DRZP598BNA;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = lumirai/Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = LUMIRAi;
@@ -461,6 +532,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.lumirai.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -477,13 +549,16 @@
 		};
 		89D8E40E2ECEB9CB005AD8A3 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 26E3E4D9379416D7CF40E849 /* Pods-lumirai.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = DRZP598BNA;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = lumirai/Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = LUMIRAi;
@@ -500,6 +575,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.lumirai.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;

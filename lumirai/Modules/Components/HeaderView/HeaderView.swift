@@ -9,9 +9,11 @@ import Foundation
 import SwiftUI
 
 struct HeaderView: View {
+    var action: () -> Void
     var body: some View {
         HStack{
             Button(action: {
+                action()
             }) {
                 Image(systemName: "xmark")
                     .font(.system(size: 24, weight: .medium))

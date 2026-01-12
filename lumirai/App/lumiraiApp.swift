@@ -17,11 +17,7 @@ struct lumiraiApp: App {
     
     var body: some Scene {
         WindowGroup {
-            SplashView()
-//            ExpressionView()
-//            PreviewScreen()
-//            CalmSessionView(currentEmotion: .anxiety, currentMode: .breath)
-            
+            RootView()
         }
     }
 }

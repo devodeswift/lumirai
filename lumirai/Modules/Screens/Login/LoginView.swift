@@ -11,6 +11,7 @@ import SwiftUI
 struct LoginView: View {
     @State private var goToSubscription: Bool = false
     @StateObject private var viewModel = LoginViewModel()
+    @EnvironmentObject private var router: Router
     
     var body: some View {
         BaseView(viewModel: viewModel) { vm in
@@ -19,8 +20,10 @@ struct LoginView: View {
                     .ignoresSafeArea()
                 Color.clear
                     .safeAreaInset(edge: .top) {
-                        HeaderView()
-                            .padding(.top, 16)
+                        HeaderView{
+                            router.pop()
+                        }
+                        .padding(.top, 16)
                     }
                 VStack(spacing:20){
                     Spacer()
@@ -70,8 +73,7 @@ struct LoginView: View {
                     .padding(.top, 16)
                     
                     Button(action : {
-                        // goo
-                        goToSubscription = true
+                        vm.loginGoogle()
                     })
                     {
                         HStack{
@@ -103,9 +105,6 @@ struct LoginView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .padding(.horizontal, 16)
             }
-            .navigationDestination(isPresented: $goToSubscription) {
-                Subscription()
-            }
             .navigationBarBackButtonHidden(true)
         }
     }
@@ -113,6 +112,7 @@ struct LoginView: View {
     func headerView() -> some View {
         HStack{
             Button(action: {
+                router.popToRoot()
             }) {
                 Image(systemName: "xmark")
                     .font(.system(size: 24, weight: .medium))
