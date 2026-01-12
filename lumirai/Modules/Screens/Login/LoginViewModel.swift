@@ -17,6 +17,7 @@ class LoginViewModel: BaseViewModel {
     @Published var isSuccsessLogin: Bool = false
     
     let googleAuth: GoogleAuth = GoogleAuth()
+    let appleAuth: AppleAuth = AppleAuth()
     
     override func start() {
         super.start()
@@ -24,6 +25,20 @@ class LoginViewModel: BaseViewModel {
     
     func loginGoogle(){
         googleAuth.signIn { [weak self] result in
+            switch result {
+            case .success:
+                self?.isSuccsessLogin = true
+            case .cancelled:
+                AppLogger.shared.log("User cancelled sign-in.")
+                
+            case .failed(let error):
+                AppLogger.shared.log("Failed to sign-in with error: \(error)")
+            }
+            
+        }
+    }
+    func loginApple(){
+        appleAuth.signIn{ [weak self] result in
             switch result {
             case .success:
                 self?.isSuccsessLogin = true

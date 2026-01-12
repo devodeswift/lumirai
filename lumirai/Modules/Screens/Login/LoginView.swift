@@ -42,7 +42,7 @@ struct LoginView: View {
                     )
                     Button(action : {
                         // with apple
-                        goToSubscription = true
+                        vm.loginApple()
                     })
                     {
                         HStack{
