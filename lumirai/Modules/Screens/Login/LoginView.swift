@@ -106,6 +106,11 @@ struct LoginView: View {
                 .padding(.horizontal, 16)
             }
             .navigationBarBackButtonHidden(true)
+            .onChange(of : vm.isSuccsessLogin) { isSuccess in
+                if isSuccess {
+                    router.push(.subscription)
+                }
+            }
         }
     }
     

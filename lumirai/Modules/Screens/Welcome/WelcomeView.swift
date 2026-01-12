@@ -52,7 +52,12 @@ struct WelcomeView: View {
                         .frame(height: 98)
                     if showButton {
                         GlassButtonView(title: vm.textButton) {
-                            router.push(.login)
+                            if vm.isLoggingIn {
+                                router.push(.subscription)
+                            } else {
+                                router.push(.login)
+                            }
+                            
                             
                         }
                         .frame(width: 180)

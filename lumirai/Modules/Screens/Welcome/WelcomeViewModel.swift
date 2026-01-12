@@ -16,10 +16,17 @@ class WelcomeViewModel: BaseViewModel, WCSessionDelegate{
     @Published var txtTittleTop: String = "Silence that holds you."
     @Published var txtTittleBot: String = "Luxury is no longer gold. It's inner peace."
     @Published var textButton: String = "enter the calm"
+    @Published var isLoggingIn: Bool = false
     
     override func start() {
         super.start()
-        print("🔥 WelcomeViewModel start() CALLED")
+        cekLoggingIn()
+    }
+    
+    func cekLoggingIn() {
+        if AppUserDefaults.shared.isLoggedIn {
+            isLoggingIn = true
+        }
     }
     
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
