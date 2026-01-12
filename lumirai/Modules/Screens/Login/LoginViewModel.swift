@@ -14,14 +14,26 @@ class LoginViewModel: BaseViewModel {
     @Published var textDescLogin3: String = " account"
     @Published var textDescLoginApple: String = "Sign in With Apple"
     @Published var textDescLoginGoogle: String = "Sign in With Google"
+    @Published var isSuccsessLogin: Bool = false
     
-    let authViewModel: AuthViewModel = AuthViewModel()
+    let googleAuth: GoogleAuth = GoogleAuth()
     
     override func start() {
         super.start()
     }
     
     func loginGoogle(){
-        authViewModel.signIn()
+        googleAuth.signIn { [weak self] result in
+            switch result {
+            case .success:
+                self?.isSuccsessLogin = true
+            case .cancelled:
+                AppLogger.shared.log("User cancelled sign-in.")
+                
+            case .failed(let error):
+                AppLogger.shared.log("Failed to sign-in with error: \(error)")
+            }
+            
+        }
     }
 }
