@@ -1,12 +1,11 @@
 //
-//  GoogleAuthViewModel.swift
+//  GoogleAuth.swift
 //  lumirai
 //
 //  Created by dana nur fiqi on 12/01/26.
 //
 
 import Foundation
-import Combine
 import SwiftUI
 import GoogleSignIn
 
