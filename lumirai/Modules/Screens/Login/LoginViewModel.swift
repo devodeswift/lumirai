@@ -31,10 +31,10 @@ class LoginViewModel: BaseViewModel {
                     AppUserDefaults.shared.isLoggedIn = true
                     self?.isSuccsessLogin = true
                 case .cancelled:
-                    AppLogger.shared.log("User cancelled sign-in.")
+                    AppLogger.shared.log("User cancelled Google sign-in.")
                     
                 case .failed(let error):
-                    AppLogger.shared.log("Failed to sign-in with error: \(error)")
+                    AppLogger.shared.log("Failed to Google sign-in with error: \(error)")
                 }
             }
         }
@@ -45,10 +45,10 @@ class LoginViewModel: BaseViewModel {
             case .success:
                 self?.isSuccsessLogin = true
             case .cancelled:
-                AppLogger.shared.log("User cancelled sign-in.")
+                AppLogger.shared.log("User cancelled Apple sign-in.")
                 
             case .failed(let error):
-                AppLogger.shared.log("Failed to sign-in with error: \(error)")
+                AppLogger.shared.log("Failed to Apple sign-in with error: \(error)")
             }
             
         }

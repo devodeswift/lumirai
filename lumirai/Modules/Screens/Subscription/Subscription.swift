@@ -11,6 +11,7 @@ import SwiftUI
 struct Subscription: View {
     @State private var goToExpression = false
     @StateObject private var viewModel = SubscriptionViewModel()
+    @EnvironmentObject private var router: Router
 
     var body: some View {
         BaseView( viewModel: viewModel ) { vm in
@@ -35,9 +36,9 @@ struct Subscription: View {
                 
                 VStack{
                     HeaderView{
-                        
+                        router.popToRoot()
                     }
-                        .padding(.top, 16)
+                    .padding(.top, 16)
                     Text(vm.textDescSubscription)
                         .font(AppFonts.nunito(size: 24))
                         .foregroundColor(.white)
