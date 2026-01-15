@@ -7,6 +7,8 @@ target 'lumirai' do
 
   	# Pods for lumirai
 	pod 'GoogleSignIn'
+	pod 'Alamofire', '5.10.2'
+	pod 'SwiftyJSON', '5.0.2'
 
 end
 

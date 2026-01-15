@@ -182,7 +182,8 @@ struct ExpressionView: View {
             Spacer()
             if !isListening {
                 Button(action: {
-                    goToCalm = true
+//                    goToCalm = true
+                    vm.generateText()
                 }) {
                 Image(systemName: "chevron.right")
                     .font(.system(size: 24, weight: .medium))

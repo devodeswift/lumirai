@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 import WatchConnectivity
+import Alamofire
 
 
 class ExpressionViewModel: BaseViewModel {
@@ -21,23 +22,31 @@ class ExpressionViewModel: BaseViewModel {
     private var hrvBaseline: Double?
     private let wcSession = WCSessionManager.shared
     @Published var hrv: Double?
+    let apiService = APIService()
     
     override func start() {
         wcSession.$latestHRV
-                    .receive(on: DispatchQueue.main)
-                    .sink { [weak self] value in
-                        guard let value else { return }
-                        self?.hrv = value
-                        self?.updateHaloPulse(from: value)
-                    }
-                    .store(in: &cancellables)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] value in
+                guard let value else { return }
+                self?.hrv = value
+                self?.updateHaloPulse(from: value)
+            }
+            .store(in: &cancellables)
     }
     
     private func updateHaloPulse(from hrv: Double) {
-            // contoh mapping
-            //haloPulse = min(max(CGFloat(hrv / 100), 0.8), 1.3)
         AppLogger.shared.log("cek hrv expression => \(hrv)")
-        }
+    }
 
-    
+    func generateText() {
+        Task {
+            do {
+                let articleResponse = try await apiService.getData()
+                AppLogger.shared.log("cek article response => \(articleResponse.per_page)")
+            } catch {
+                AppLogger.shared.log("Failed to fetch articles: \(error)")
+            }
+        }
+    }
 }
