@@ -25,7 +25,7 @@ enum APIRouter: URLRequestConvertible {
     var path: String {
         switch self{
         case .generateContent: return "/v1beta/models/gemini-2.5-flash:generateContent"
-        case .getDataArticle: return "/api/articless"
+        case .getDataArticle: return "/api/articles"
         }
     }
     

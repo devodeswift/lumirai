@@ -9,6 +9,7 @@ target 'lumirai' do
 	pod 'GoogleSignIn'
 	pod 'Alamofire', '5.10.2'
 	pod 'SwiftyJSON', '5.0.2'
+	pod 'netfox', '1.21.0'
 
 end
 

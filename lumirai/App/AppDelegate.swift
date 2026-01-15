@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 import GoogleSignIn
+import netfox
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication,
@@ -21,6 +22,11 @@ class AppDelegate: NSObject, UIApplicationDelegate {
                 }
             }
         }
+        
+        #if DEBUG
+            NFX.sharedInstance().start()
+        #endif
+        
         return true
     }
     func application(
