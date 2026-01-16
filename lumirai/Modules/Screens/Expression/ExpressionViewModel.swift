@@ -19,9 +19,11 @@ class ExpressionViewModel: BaseViewModel {
     @Published var pulseManager = VoicePulseManager()
     @Published var haloPulse: CGFloat = 1.0
     @Published var speech = SpeechRecognizer()
+    @Published var hrv: Double?
+    @Published var geminiAction: GeminiActionModel?
     private var hrvBaseline: Double?
     private let wcSession = WCSessionManager.shared
-    @Published var hrv: Double?
+    
     let apiService = APIService()
     
     override func start() {
@@ -56,8 +58,11 @@ class ExpressionViewModel: BaseViewModel {
                     return
                 }
                 let dataResultAction = action
+                geminiAction = dataResultAction
+                if let dataGeminiAction = geminiAction {
+                    AppLogger.shared.log("cek dataGeminiAction response action=> \(dataGeminiAction.echo)")
+                }
                 AppLogger.shared.log("cek gemini response part => \(part.text)")
-                AppLogger.shared.log("cek gemini response part action=> \(dataResultAction.echo)")
             } catch {
                 AppLogger.shared.log("Failed to fetch articles: \(error)")
             }

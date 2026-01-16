@@ -11,4 +11,7 @@ enum AppRoute: Hashable {
     case welcome
     case login
     case subscription
+    case expression
+    case calm(data: GeminiActionModel)
+    
 }

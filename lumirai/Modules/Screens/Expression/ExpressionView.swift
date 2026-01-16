@@ -7,15 +7,16 @@
 import SwiftUI
 
 struct ExpressionView: View {
+    @StateObject private var viewmodel = ExpressionViewModel()
+    @EnvironmentObject private var router: Router
+    @FocusState private var isFocused : Bool
     @State private var isAnimating = false
     @State private var text: String = ""
-    @StateObject private var viewmodel = ExpressionViewModel()
-    @FocusState private var isFocused : Bool
     @State private var isListening : Bool = false
     @State private var animate: Bool = false
-    
     @State private var float = false
     @State private var goToCalm = false
+    
     var body: some View {
         BaseView(viewModel: viewmodel) { vm in
             ZStack {
@@ -60,9 +61,6 @@ struct ExpressionView: View {
                 }
             }
             .navigationBarBackButtonHidden(true)
-            .navigationDestination(isPresented: $goToCalm) {
-                CalmView()
-            }
             .ignoresSafeArea(.keyboard, edges: .bottom)
             .onTapGesture {
                 UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
@@ -79,6 +77,11 @@ struct ExpressionView: View {
                     vm.pulseManager.stop()
                     vm.speech.stopListening()
                 }
+            }
+            .onChange(of: vm.geminiAction) { action in
+                guard let action else { return }
+                router.push(.calm(data: action))
+                vm.geminiAction = nil
             }
             .onReceive(vm.pulseManager.$amplitude) { value in
                 

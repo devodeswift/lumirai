@@ -22,6 +22,10 @@ struct RootView: View {
                         LoginView()
                     case .subscription:
                         Subscription()
+                    case .expression:
+                        ExpressionView()
+                    case .calm(let data):
+                        CalmView(action: data)
                     }
                 }
         }

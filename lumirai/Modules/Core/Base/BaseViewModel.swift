@@ -15,6 +15,7 @@ class BaseViewModel: NSObject, ObservableObject {
     
     override init(){
         super.init()
+        AppLogger.shared.log("super init")
         start()
     }
     

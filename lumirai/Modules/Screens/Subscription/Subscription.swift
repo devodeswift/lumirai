@@ -127,7 +127,7 @@ struct Subscription: View {
                     Spacer()
                     
                     Button(action : {
-                        goToExpression = true
+                        router.push(.expression)
                     })
                     {
                         HStack{
@@ -162,9 +162,6 @@ struct Subscription: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .padding(.horizontal, 32)
-            }
-            .navigationDestination(isPresented: $goToExpression) {
-                ExpressionView()
             }
             .navigationBarBackButtonHidden(true)
         }

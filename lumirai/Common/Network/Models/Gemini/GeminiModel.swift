@@ -103,7 +103,7 @@ struct PromptTokenDetailModel {
     }
 }
 
-struct GeminiActionModel {
+struct GeminiActionModel: Hashable {
     var echo: String = ""
     var action: String = ""
     var durationSec: Int = 0

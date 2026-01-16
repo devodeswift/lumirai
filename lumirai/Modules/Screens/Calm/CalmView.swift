@@ -11,6 +11,7 @@ import SceneKit
 import Combine
 
 struct CalmView: View{
+    @EnvironmentObject private var router: Router
     @State private var animate = false
     @State private var breatheState = false
     @State private var isStart: Bool = false
@@ -24,7 +25,11 @@ struct CalmView: View{
     @State private var timeElapsed: Double = 0
     let totalDuration: Double = 60
     
-    @StateObject private var calmviewModel = CalmViewModel()
+    @StateObject private var calmviewModel: CalmViewModel
+    
+    init(action: GeminiActionModel) {
+        _calmviewModel = StateObject(wrappedValue: CalmViewModel(action: action))
+    }
     
     //MARK: - Func View
     func background() -> some View {
@@ -121,7 +126,7 @@ struct CalmView: View{
     }
     
     var body: some View {
-        BaseView(viewModel: CalmViewModel()) { vm in
+        BaseView(viewModel: calmviewModel) { vm in
             ZStack {
                 Color(hex: "0A0F16")
                     .ignoresSafeArea()
@@ -133,7 +138,7 @@ struct CalmView: View{
                         .foregroundColor(.white)
                         .padding(.top, 10)
                     Spacer()
-                    Text("You paused. You didn’t fail.")
+                    Text(vm.action.echo)
                         .font(AppFonts.nunito(size: 20))
                         .foregroundColor(.white)
                     if isStart {
@@ -164,6 +169,6 @@ struct CalmView: View{
     
 }
 
-#Preview {
-    CalmView()
-}
+//#Preview {
+//    CalmView()
+//}

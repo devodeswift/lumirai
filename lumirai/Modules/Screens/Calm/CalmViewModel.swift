@@ -8,5 +8,14 @@
 import Foundation
 
 class CalmViewModel: BaseViewModel {
+    var action: GeminiActionModel
     
+//    override func start() {
+//        <#code#>
+//    }
+    
+    init(action: GeminiActionModel){
+        self.action = action
+        super.init()
+    }
 }

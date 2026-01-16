@@ -74,9 +74,6 @@ struct WelcomeView: View {
                 .padding(.horizontal, 2)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-//            .navigationDestination(isPresented: $goToLogin) {
-//                LoginView()
-//            }
             .navigationBarBackButtonHidden(true)
             .onAppear {
                 
