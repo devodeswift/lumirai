@@ -1,0 +1,30 @@
+{
+    "candidates": [
+        {
+            "content": {
+                "parts": [
+                    {
+                        "text": "{ \"echo\": \"Menuangkan perasaan ke dalam tulisan dapat membantu Anda mengurai benang kusut dalam pikiran.\", \"action\": \"journal\", \"duration_sec\": 300, \"button\": \"Mulai Menulis\" }"
+                    }
+                ],
+                "role": "model"
+            },
+            "finishReason": "STOP",
+            "index": 0
+        }
+    ],
+    "usageMetadata": {
+        "promptTokenCount": 107,
+        "candidatesTokenCount": 53,
+        "totalTokenCount": 521,
+        "promptTokensDetails": [
+            {
+                "modality": "TEXT",
+                "tokenCount": 107
+            }
+        ],
+        "thoughtsTokenCount": 361
+    },
+    "modelVersion": "gemini-2.5-flash",
+    "responseId": "fLtlabKIN_L_4-EPmdWdsQo"
+}

@@ -1,0 +1,30 @@
+{
+    "candidates": [
+        {
+            "content": {
+                "parts": [
+                    {
+                        "text": "{ \"echo\": \"Segarkan tubuh Anda kembali dengan air putih agar fokus dan energi Anda tetap terjaga.\", \"action\": \"drink water\", \"duration_sec\": 30, \"button\": \"Minum Sekarang\" }"
+                    }
+                ],
+                "role": "model"
+            },
+            "finishReason": "STOP",
+            "index": 0
+        }
+    ],
+    "usageMetadata": {
+        "promptTokenCount": 107,
+        "candidatesTokenCount": 53,
+        "totalTokenCount": 521,
+        "promptTokensDetails": [
+            {
+                "modality": "TEXT",
+                "tokenCount": 107
+            }
+        ],
+        "thoughtsTokenCount": 361
+    },
+    "modelVersion": "gemini-2.5-flash",
+    "responseId": "fLtlabKIN_L_4-EPmdWdsQo"
+}

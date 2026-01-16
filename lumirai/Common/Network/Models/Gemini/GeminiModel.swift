@@ -8,74 +8,116 @@
 import Foundation
 import SwiftyJSON
 
-struct GeminiModel: Decodable, Sendable {
-    let candidates: [Candidate]
-    let usageMetadata: UsageMetadata
-    let modelVersion: String
-    let responseId: String
-}
+struct GeminiResponseModel {
+    var candidates: [CandidateModel] = []
+    var usageMetadata: UsageMetadataModel?
+    var modelVersion: String = ""
+    var responseId: String = ""
 
-struct Candidate: Decodable, Sendable {
-    let content: Content
-    let finishReason: String
-    let index: Int
-}
+    init() {}
 
-struct Content: Decodable, Sendable {
-    let parts: [Part]
-    let role: String
-}
-
-struct Part: Decodable, Sendable {
-    let text: String
-}
-
-struct UsageMetadata: Decodable, Sendable {
-    let promptTokenCount: Int
-    let candidatesTokenCount: Int
-    let totalTokenCount: Int
-    let promptTokensDetails: [PromptTokenDetail]
-    let thoughtsTokenCount: Int
-}
-
-struct PromptTokenDetail: Decodable, Sendable {
-    let modality: String
-    let tokenCount: Int
-}
-
-struct AIActionResponse: Decodable, Sendable {
-    let echo: String
-    let action: String
-    let durationSec: Int
-    let button: String
-
-    enum CodingKeys: String, CodingKey {
-        case echo
-        case action
-        case durationSec = "duration_sec"
-        case button
+    init(_ json: JSON) {
+        candidates = json["candidates"].arrayValue.map { CandidateModel($0) }
+        usageMetadata = UsageMetadataModel(json["usageMetadata"])
+        modelVersion = json["modelVersion"].stringValue
+        responseId = json["responseId"].stringValue
     }
 }
 
-//struct ArticleResponse: Decodable, @unchecked Sendable {
-//    let page: Int
-//    let per_page: Int
-//    let total: Int
-//    let total_pages: Int
-//    let data: [Article]
-//}
-//
-//struct Article: Decodable, @unchecked Sendable {
-//    let title: String?
-//    let url: String?
-//    let author: String?
-//    let num_comments: Int?
-//    let story_id: Int?
-//    let story_title: String?
-//    let story_url: String?
-//    let parent_id: Int?
-//    let created_at: Int?
-//}
+struct CandidateModel {
+    var content: ContentModel?
+    var finishReason: String = ""
+    var index: Int = 0
+
+    init() {}
+
+    init(_ json: JSON) {
+        content = ContentModel(json["content"])
+        finishReason = json["finishReason"].stringValue
+        index = json["index"].intValue
+    }
+}
+
+
+struct ContentModel {
+    var parts: [PartModel] = []
+    var role: String = ""
+
+    init() {}
+
+    init(_ json: JSON) {
+        parts = json["parts"].arrayValue.map { PartModel($0) }
+        role = json["role"].stringValue
+    }
+}
+
+struct PartModel {
+    var text: String = ""
+    var action: GeminiActionModel?
+
+    init() {}
+
+    init(_ json: JSON) {
+        text = json["text"].stringValue
+        action = PartModel.parseAction(from: text)
+    }
+
+    private static func parseAction(from text: String) -> GeminiActionModel? {
+        guard let data = text.data(using: .utf8),
+              let json = try? JSON(data: data) else {
+            return nil
+        }
+        return GeminiActionModel(json)
+    }
+}
+
+struct UsageMetadataModel {
+    var promptTokenCount: Int = 0
+    var candidatesTokenCount: Int = 0
+    var totalTokenCount: Int = 0
+    var thoughtsTokenCount: Int = 0
+    var promptTokensDetails: [PromptTokenDetailModel] = []
+
+    init() {}
+
+    init(_ json: JSON) {
+        promptTokenCount = json["promptTokenCount"].intValue
+        candidatesTokenCount = json["candidatesTokenCount"].intValue
+        totalTokenCount = json["totalTokenCount"].intValue
+        thoughtsTokenCount = json["thoughtsTokenCount"].intValue
+        promptTokensDetails = json["promptTokensDetails"].arrayValue.map {
+            PromptTokenDetailModel($0)
+        }
+    }
+}
+
+struct PromptTokenDetailModel {
+    var modality: String = ""
+    var tokenCount: Int = 0
+
+    init() {}
+
+    init(_ json: JSON) {
+        modality = json["modality"].stringValue
+        tokenCount = json["tokenCount"].intValue
+    }
+}
+
+struct GeminiActionModel {
+    var echo: String = ""
+    var action: String = ""
+    var durationSec: Int = 0
+    var button: String = ""
+
+    init() {}
+
+    init(_ json: JSON) {
+        echo = json["echo"].stringValue
+        action = json["action"].stringValue
+        durationSec = json["duration_sec"].intValue
+        button = json["button"].stringValue
+    }
+}
 
 struct ArticleResponse {
     var page: Int = 0

@@ -9,10 +9,10 @@ import Foundation
 import Combine
 import WatchConnectivity
 import Alamofire
+import SwiftyJSON
 
 
 class ExpressionViewModel: BaseViewModel {
-    
     
     @Published var textTitle: String = "LUMIRAi"
     @Published var textPlaceholder: String = "When you’re ready, I’m listening."
@@ -42,8 +42,22 @@ class ExpressionViewModel: BaseViewModel {
     func generateText() {
         Task {
             do {
-                let articleResponse = try await apiService.getData()
-                AppLogger.shared.log("cek article response => \(articleResponse.per_page)")
+//                let articleResponse = try await apiService.getData()
+//                AppLogger.shared.log("cek article response => \(articleResponse.per_page)")
+                let json = JSON(TestDummyData.shared.getDummyJSON(fileName: "action-breath-dummy"))
+                let response = GeminiResponseModel(json)
+
+                guard
+                    let candidate = response.candidates.first,
+                    let content = candidate.content,
+                    let part = content.parts.first,
+                    let action = part.action
+                else {
+                    return
+                }
+                let dataResultAction = action
+                AppLogger.shared.log("cek gemini response part => \(part.text)")
+                AppLogger.shared.log("cek gemini response part action=> \(dataResultAction.echo)")
             } catch {
                 AppLogger.shared.log("Failed to fetch articles: \(error)")
             }

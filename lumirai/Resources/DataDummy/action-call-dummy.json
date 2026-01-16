@@ -1,0 +1,30 @@
+{
+    "candidates": [
+        {
+            "content": {
+                "parts": [
+                    {
+                        "text": "{ \"echo\": \"Berbagi cerita dengan orang terpercaya bisa meringankan beban yang sedang Anda pikul sendirian.\", \"action\": \"call\", \"duration_sec\": 900, \"button\": \"Telepon Sekarang\" }"
+                    }
+                ],
+                "role": "model"
+            },
+            "finishReason": "STOP",
+            "index": 0
+        }
+    ],
+    "usageMetadata": {
+        "promptTokenCount": 107,
+        "candidatesTokenCount": 53,
+        "totalTokenCount": 521,
+        "promptTokensDetails": [
+            {
+                "modality": "TEXT",
+                "tokenCount": 107
+            }
+        ],
+        "thoughtsTokenCount": 361
+    },
+    "modelVersion": "gemini-2.5-flash",
+    "responseId": "fLtlabKIN_L_4-EPmdWdsQo"
+}
