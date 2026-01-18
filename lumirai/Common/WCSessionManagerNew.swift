@@ -51,13 +51,20 @@ final class WCSessionManagerNew: NSObject, WCSessionDelegate, ObservableObject {
         _ session: WCSession,
         activationDidCompleteWith activationState: WCSessionActivationState,
         error: Error?
-    ) {}
+    ) {
+        print("📲 WCSession activated:", activationState.rawValue)
+        let session = WCSession.default
+
+        print("isPaired:", session.isPaired)
+        print("isWatchAppInstalled:", session.isWatchAppInstalled)
+        print("activationState:", session.activationState.rawValue)
+    }
     
     func session(
         _ session: WCSession,
         didReceiveUserInfo userInfo: [String : Any]
     ) {
-        print("📩 UserInfo received:", userInfo)
+        print("📩 UserInfo test received:", userInfo)
 
         if let hrv = userInfo["hrv"] as? Double {
             DispatchQueue.main.async {

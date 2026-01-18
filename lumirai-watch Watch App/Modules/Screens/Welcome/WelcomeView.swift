@@ -56,6 +56,9 @@ struct WelcomeView: View {
                     .multilineTextAlignment(.center)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .onAppear{
+                vm.refreshVitals()
+            }
         }
     }
     

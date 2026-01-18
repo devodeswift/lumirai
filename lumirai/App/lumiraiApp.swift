@@ -12,8 +12,8 @@ struct lumiraiApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
     init() {
-            _ = WCSessionManagerNew.shared   // ← PENTING
-        }
+        _ = WCSessionManagerNew.shared  // ← PENTING
+    }
     
     var body: some Scene {
         WindowGroup {

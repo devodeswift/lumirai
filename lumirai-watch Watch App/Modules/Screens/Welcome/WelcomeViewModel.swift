@@ -11,63 +11,106 @@ import WatchConnectivity
 import Combine
 
 class WelcomeViewModel: BaseViewModel {
-    @Published var hrv: Double = 0.0
     private var timer: Timer?
     
     
-    override func start() {
-        refreshHRV()
-        
+    override init(){
+        super.init()
+//        self.refreshVitals()
     }
+    
+    func refreshVitals() {
+        HealthKitManager.shared.requestAuthorization { authorized in
+            guard authorized else { return }
 
-    func refreshHRV() {
-            HealthKitManager.shared.requestAuthorization { authorized in
-                guard authorized else { return }
-                var session = WCSessionManager.shared
+            var payload: [String: Any] = [:]
+            let group = DispatchGroup()
 
-                HealthKitManager.shared.fetchLatestHRV { value in
-                    guard let value else { return }
-
-                    DispatchQueue.main.async {
-                        self.hrv = value
-//                        WCSessionManager.shared.sendHRV(value)
-                        self.sendHRVToiPhone(30)
-                        AppLogger.shared.log("cek value hrv \(value)")
-                    }
+            // HRV
+            group.enter()
+            HealthKitManager.shared.fetchLatestHRV { value in
+                if let value {
+                    payload["hrvValue"] = (value * 100).rounded() / 100
                 }
+                group.leave()
+            }
+
+            // Heart Rate
+            group.enter()
+            HealthKitManager.shared.fetchLatestHeartRate { bpm in
+                if let bpm {
+                    payload["heartRateValue"] = (bpm * 100).rounded() / 100
+                }
+                group.leave()
+            }
+
+            // Breathing Rate
+            group.enter()
+            HealthKitManager.shared.fetchLatestBreathingRate { rate in
+                if let rate {
+                    payload["breathingRateValue"] = (rate * 100).rounded() / 100
+                }
+                group.leave()
+            }
+
+            group.notify(queue: .main) {
+                guard !payload.isEmpty else { return }
+                self.sendVitalsToiPhone(payload)
+                AppLogger.shared.log("📤 Queued vitals: \(payload)")
             }
         }
+    }
     
-    func sendHRVToiOS(_ value: Double) {
-        let session = WCSession.default
+    func sendVitalsToiPhone(_ data: [String: Any]) {
+        WatchSessionManager.shared.send(data)
+    }
+}
 
-        guard session.isReachable else {
-            print("❌ iOS not reachable")
+
+final class WatchSessionManager: NSObject, WCSessionDelegate {
+    static let shared = WatchSessionManager()
+
+    private var pendingPayloads: [[String: Any]] = []
+    private(set) var isReady = false
+
+    private override init() {
+        super.init()
+
+        guard WCSession.isSupported() else { return }
+        let session = WCSession.default
+        session.delegate = self
+        session.activate()
+    }
+
+    func session(
+        _ session: WCSession,
+        activationDidCompleteWith activationState: WCSessionActivationState,
+        error: Error?
+    ) {
+        isReady = activationState == .activated
+        print("⌚️ WCSession activated:", activationState.rawValue)
+
+        flushPendingIfNeeded()
+    }
+
+    func send(_ data: [String: Any]) {
+        guard isReady else {
+            print("⏳ WCSession not ready, queue data")
+            pendingPayloads.append(data)
             return
         }
 
-//        session.sendMessage(
-//            ["hrv": value],
-//            replyHandler: nil
-//        ) { error in
-//            print("❌ Send error:", error)
-//        }
-        
-        session.transferUserInfo([
-            "hrv": hrv
-        ])
-
-        print("✅ HRV sent:", value)
+        WCSession.default.transferUserInfo(data)
+        print("📤 transferUserInfo sent:", data)
     }
-    
-    func sendHRVToiPhone(_ value: Double) {
-        guard WCSession.isSupported() else { return }
 
-        let session = WCSession.default
-        session.transferUserInfo([
-            "test": hrv
-        ])
+    private func flushPendingIfNeeded() {
+        guard isReady, !pendingPayloads.isEmpty else { return }
 
-        print("📤 HRV sent (transferUserInfo):", hrv)
+        print("🚀 Flushing pending payloads:", pendingPayloads.count)
+        pendingPayloads.forEach {
+            WCSession.default.transferUserInfo($0)
+        }
+        pendingPayloads.removeAll()
     }
 }
