@@ -21,27 +21,20 @@ class ExpressionViewModel: BaseViewModel {
     @Published var speech = SpeechRecognizer()
     @Published var hrv: Double?
     @Published var geminiAction: GeminiActionModel?
+    private var emotion: EmotionState = .unknown
     private var hrvBaseline: Double?
-    private let wcSession = WCSessionManager.shared
     
     let apiService = APIService()
     
-    override func start() {
-        wcSession.$latestHRV
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] value in
-                guard let value else { return }
-                self?.hrv = value
-                self?.updateHaloPulse(from: value)
-            }
-            .store(in: &cancellables)
-    }
-    
-    private func updateHaloPulse(from hrv: Double) {
-        AppLogger.shared.log("cek hrv expression => \(hrv)")
-    }
 
-    func generateText() {
+    func generateText(text: String) {
+        let currentText = text
+        let emotion = self.emotion
+        let lastText = AppUserDefaults.shared.lastUserTexts
+        AppLogger.shared.log("cek currentText => \(currentText)")
+        AppLogger.shared.log("cek emotion => \(emotion)")
+        AppLogger.shared.log("cek lasttext => \(lastText)")
+        
         Task {
             do {
 //                let articleResponse = try await apiService.getData()
@@ -68,4 +61,17 @@ class ExpressionViewModel: BaseViewModel {
             }
         }
     }
+    
+    func checkEmotionFromWatch() {
+        let hrv = AppUserDefaults.shared.hrv
+        let heartRate = AppUserDefaults.shared.hearRate
+        let breathingRate = AppUserDefaults.shared.breathRate
+        
+        emotion = EmotionEngine.detectEmotion(hrv: hrv, heartRate: heartRate, breathingRate: breathingRate)
+        AppLogger.shared.log("hrv : \(hrv)")
+        AppLogger.shared.log("heartRate : \(heartRate)")
+        AppLogger.shared.log("breathingRate : \(breathingRate)")
+        AppLogger.shared.log("emotion : \(emotion)")
+    }
+    
 }

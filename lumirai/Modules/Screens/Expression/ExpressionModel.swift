@@ -21,53 +21,85 @@ struct EmotionEngine {
         heartRate: Double,
         breathingRate: Double
     ) -> EmotionState {
+        
+//        Calm
+//        HRV ≥ 60
+//        HR ≤ 75
+//        BR ≤ 14
+        
+//        Anxiety
+//        HRV ≤ 40
+//        HR ≥ 85
+//        BR ≥ 18
+        
+//        Sadness
+//        HRV ≤ 45
+//        HR ≤ 70
+//        BR normal / Slow
 
-        var scoreCalm = 0
-        var scoreAnxiety = 0
-        var scoreSadness = 0
-        var signalCount = 0
+        var availableSignals = 0
 
-        // HRV
-        if hrv > 0 {
-            signalCount += 1
-            if hrv >= 50 { scoreCalm += 2 }
-            else if hrv < 30 { scoreAnxiety += 2 }
-            else { scoreSadness += 1 }
-        }
+        let hasHRV = hrv > 0
+        let hasHR = heartRate > 0
+        let hasBR = breathingRate > 0
 
-        // Heart Rate
-        if heartRate > 0 {
-            signalCount += 1
-            if heartRate <= 70 { scoreCalm += 2 }
-            else if heartRate >= 90 { scoreAnxiety += 2 }
-            else { scoreSadness += 1 }
-        }
-
-        // Breathing Rate
-        if breathingRate > 0 {
-            signalCount += 1
-            if breathingRate <= 12 { scoreCalm += 1 }
-            else if breathingRate >= 20 { scoreAnxiety += 1 }
-        }
+        if hasHRV { availableSignals += 1 }
+        if hasHR { availableSignals += 1 }
+        if hasBR { availableSignals += 1 }
 
         // Minimal data
-        guard signalCount >= 2 else {
+        guard availableSignals >= 2 else {
             return .unknown
         }
 
-        // Decision
-        if scoreAnxiety > scoreCalm && scoreAnxiety > scoreSadness {
-            return .anxiety
+        // 1️⃣ CLEAR ANXIETY
+        if hasHRV && hasHR {
+            if hrv < 40 && heartRate >= 85 {
+                return .anxiety
+            }
         }
 
-        if scoreCalm > scoreAnxiety && scoreCalm > scoreSadness {
+        if hasHR && hasBR {
+            if heartRate >= 90 && breathingRate >= 18 {
+                return .anxiety
+            }
+        }
+
+        // 2️⃣ CLEAR CALM
+        if hasHRV && hasHR {
+            if hrv >= 60 && heartRate <= 75 {
+                return .calm
+            }
+        }
+
+        if hasBR && breathingRate <= 12 {
             return .calm
         }
 
-        if scoreSadness > scoreAnxiety && scoreSadness > scoreCalm {
+        // 3️⃣ SADNESS / LOW ENERGY
+        if hasHRV && hrv < 45 {
             return .sadness
+        }
+
+        if hasHR && heartRate < 70 {
+            return .sadness
+        }
+
+        // 4️⃣ FALLBACK (deterministic)
+        if hasHRV {
+            return hrv >= 55 ? .calm : .sadness
+        }
+
+        if hasHR {
+            return heartRate >= 85 ? .anxiety : .sadness
         }
 
         return .unknown
     }
 }
+
+struct LastUserText: Codable {
+    let text: String
+    let savedAt: Date
+}
+

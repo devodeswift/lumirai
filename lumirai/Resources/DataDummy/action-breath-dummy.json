@@ -4,7 +4,7 @@
             "content": {
                 "parts": [
                     {
-                        "text": "{ \"echo\": \"Tarik napas dalam-dalam, biarkan paru-paru Anda terisi udara segar untuk melepaskan ketegangan pikiran.\", \"action\": \"breathe\", \"duration_sec\": 60, \"button\": \"Mulai Bernapas\" }"
+                        "text": "{\"emotion\": \"anxiety\",\"echo\": \"I realize things feel overwhelming right now, but we can take this one step at a time to find your center again.\",\"action\": \"breathe\",\"duration_sec\": 300,\"button\": \"Start Breathing\"}"
                     }
                 ],
                 "role": "model"

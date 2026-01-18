@@ -54,11 +54,13 @@ struct ExpressionView: View {
                 }
             }
             .onAppear {
+                vm.checkEmotionFromWatch()
                 isAnimating = true
                 float = true
                 if !isListening {
                     animate = true
                 }
+                
             }
             .navigationBarBackButtonHidden(true)
             .ignoresSafeArea(.keyboard, edges: .bottom)
@@ -186,7 +188,7 @@ struct ExpressionView: View {
             if !isListening {
                 Button(action: {
 //                    goToCalm = true
-                    vm.generateText()
+                    vm.generateText(text: text)
                 }) {
                 Image(systemName: "chevron.right")
                     .font(.system(size: 24, weight: .medium))

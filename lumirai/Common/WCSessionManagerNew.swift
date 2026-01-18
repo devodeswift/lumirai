@@ -11,12 +11,12 @@ import Combine
 
 final class WCSessionManagerNew: NSObject, WCSessionDelegate, ObservableObject {
     func sessionDidBecomeInactive(_ session: WCSession) {
-        print("📡 WCSession didBecomeInactive")
+        AppLogger.shared.log("📡 WCSession didBecomeInactive")
     }
     
     func sessionDidDeactivate(_ session: WCSession) {
-        print("📡 WCSession didDeactivate")
-            WCSession.default.activate()
+        AppLogger.shared.log("📡 WCSession didDeactivate")
+        WCSession.default.activate()
     }
     
     static let shared = WCSessionManagerNew()
@@ -33,18 +33,6 @@ final class WCSessionManagerNew: NSObject, WCSessionDelegate, ObservableObject {
         }
     }
 
-    func session(
-        _ session: WCSession,
-        didReceiveMessage message: [String : Any]
-    ) {
-        print("📩 Message received:", message)
-        if let hrv = message["hrv"] as? Double {
-            DispatchQueue.main.async {
-                print("❤️ HRV set:", hrv)
-                self.hrv = hrv
-            }
-        }
-    }
 
     // required stub
     func session(
@@ -65,12 +53,23 @@ final class WCSessionManagerNew: NSObject, WCSessionDelegate, ObservableObject {
         didReceiveUserInfo userInfo: [String : Any]
     ) {
         print("📩 UserInfo test received:", userInfo)
-
-        if let hrv = userInfo["hrv"] as? Double {
-            DispatchQueue.main.async {
-                print("❤️ HRV set:", hrv)
-                self.hrv = hrv
-            }
+        let hrv = userInfo["hrvValue"] as? Double
+        let heartRate = userInfo["heartRateValue"] as? Double
+        let breathingRate = userInfo["breathingRateValue"] as? Double
+        
+        if let hrv {
+            AppUserDefaults.shared.hrv = hrv
+            AppLogger.shared.log("❤️ HRV: \(hrv)")
+        }
+        
+        if let heartRate {
+            AppUserDefaults.shared.hearRate = heartRate
+            AppLogger.shared.log("💓 Heart Rate (BPM): \(heartRate)")
+        }
+        
+        if let breathingRate {
+            AppUserDefaults.shared.breathRate = breathingRate
+            AppLogger.shared.log("🫁 Breathing Rate: \(breathingRate)")
         }
     }
 }

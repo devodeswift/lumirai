@@ -63,6 +63,7 @@ class WelcomeViewModel: BaseViewModel {
     
     func sendVitalsToiPhone(_ data: [String: Any]) {
         WatchSessionManager.shared.send(data)
+        
     }
 }
 

@@ -104,6 +104,7 @@ struct PromptTokenDetailModel {
 }
 
 struct GeminiActionModel: Hashable {
+    var emotion: String = ""
     var echo: String = ""
     var action: String = ""
     var durationSec: Int = 0
@@ -112,6 +113,7 @@ struct GeminiActionModel: Hashable {
     init() {}
 
     init(_ json: JSON) {
+        emotion = json["emotion"].stringValue
         echo = json["echo"].stringValue
         action = json["action"].stringValue
         durationSec = json["duration_sec"].intValue
