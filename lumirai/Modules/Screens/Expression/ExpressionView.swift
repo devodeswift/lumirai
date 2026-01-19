@@ -273,86 +273,41 @@ struct ExpressionView: View {
         }
         .frame(maxWidth: .infinity ,maxHeight: .infinity)
     }
-    
-//    func bigHaloBreathing(vm: ExpressionViewModel) -> some View {
-//        
-//        ZStack {
-//            if isListening {
-//                Circle()
-//                    .fill(
-//                        RadialGradient(
-//                            gradient: Gradient(colors: [
-//                                Color(hex: "E6F0FF"),
-//                                Color(hex: "E6F0FF").opacity(0.25)
-//                            ]),
-//                            center: .center,
-//                            startRadius: 0,
-//                            endRadius: 260
-//                        )
-//                    )
-//                    .frame(maxWidth: .infinity, maxHeight:.infinity)
-//                    .blur(radius: 70)
-//                    .opacity( 0.9)
-//            } else {
-//                Circle()
-//                    .fill(
-//                        RadialGradient(
-//                            gradient: Gradient(colors: [
-//                                Color(hex: "E6F0FF"),
-//                                Color(hex: "E6F0FF").opacity(0.25)
-//                            ]),
-//                            center: .center,
-//                            startRadius: 0,
-//                            endRadius: 260
-//                        )
-//                    )
-//                    .frame(maxWidth: .infinity, maxHeight:.infinity)
-//                    .blur(radius: 70)
-//                    .scaleEffect(animate ? 1.05 : 0.95)
-//                    .opacity(animate ? 0.9 : 0.4)
-//                    .animation(
-//                        Animation.easeInOut(duration: 6.5)
-//                            .repeatForever(autoreverses: true),
-//                        value: animate
-//                    )
-//            }
-//        }
         
-        func bigHaloBreathing(vm: ExpressionViewModel) -> some View {
-            ZStack {
-                Circle()
-                    .fill(
-                        RadialGradient(
-                            gradient: Gradient(colors: [
-                                Color(hex: "DCEBFF").opacity(0.08),
-                                Color(hex: "DCEBFF").opacity(0.04),
-                                .clear
-                            ]),
-                            center: .init(x: 0.46, y: 0.44),
-                            startRadius: 50,
-                            endRadius: 170
-                        )
+    func bigHaloBreathing(vm: ExpressionViewModel) -> some View {
+        ZStack {
+            Circle()
+                .fill(
+                    RadialGradient(
+                        gradient: Gradient(colors: [
+                            Color(hex: "DCEBFF").opacity(0.08),
+                            Color(hex: "DCEBFF").opacity(0.04),
+                            .clear
+                        ]),
+                        center: .init(x: 0.46, y: 0.44),
+                        startRadius: 50,
+                        endRadius: 170
                     )
-                    .blur(radius: 24)
-                    .blendMode(.screen)
-
-                Circle()
-                    .fill(
-                        RadialGradient(
-                            gradient: Gradient(colors: [
-                                Color(hex: "E6F0FF").opacity(0.22),
-                                Color(hex: "E6F0FF").opacity(0.10),
-                                .clear
-                            ]),
-                            center: .init(x: 0.52, y: 0.48),
-                            startRadius: 0,
-                            endRadius: 95
-                        )
-                    )
-                    .blur(radius: 12)
-                    .blendMode(.screen)
-            }
+                )
+                .blur(radius: 24)
+                .blendMode(.screen)
             
+            Circle()
+                .fill(
+                    RadialGradient(
+                        gradient: Gradient(colors: [
+                            Color(hex: "E6F0FF").opacity(0.22),
+                            Color(hex: "E6F0FF").opacity(0.10),
+                            .clear
+                        ]),
+                        center: .init(x: 0.52, y: 0.48),
+                        startRadius: 0,
+                        endRadius: 95
+                    )
+                )
+                .blur(radius: 12)
+                .blendMode(.screen)
+        }
     }
 }
 

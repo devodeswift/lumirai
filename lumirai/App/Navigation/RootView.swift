@@ -25,7 +25,7 @@ struct RootView: View {
                     case .expression:
                         ExpressionView()
                     case .calm(let data):
-                        CalmView(action: data)
+                        CalmView(resultAction: data)
                     }
                 }
         }

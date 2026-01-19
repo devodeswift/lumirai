@@ -15,61 +15,16 @@ struct CalmView: View{
     @State private var animate = false
     @State private var breatheState = false
     @State private var isStart: Bool = false
-    
-    var auroraColors: [Color] = [
-            Color(hex: "F5F3ED"), // Ivory
-            Color(hex: "C9D6E8")  // Pale Blue
-        ]
-    @State private var progress: CGFloat = 0.0
-    var timer = Timer.publish(every: 0.05, on: .main, in: .common)
-    @State private var timeElapsed: Double = 0
-    let totalDuration: Double = 60
-    
     @StateObject private var calmviewModel: CalmViewModel
-    
-    init(action: GeminiActionModel) {
-        _calmviewModel = StateObject(wrappedValue: CalmViewModel(action: action))
+    @State var isBreatheAnimation: Bool = false
+    @State var showPickerContact: Bool = false
+    @State var startJournal: Bool = false
+    @State private var text: String = ""
+    @FocusState private var isFocused : Bool
+    init(resultAction: GeminiActionModel) {
+        _calmviewModel = StateObject(wrappedValue: CalmViewModel(resultAction: resultAction))
     }
     
-    //MARK: - Func View
-    func background() -> some View {
-        GeometryReader { geo in
-            ZStack {
-                RadialGradient(
-                    gradient: Gradient(colors: [
-                        Color.white.opacity(0.18),
-                        Color.clear
-                    ]),
-                    center: .center,
-                    startRadius: 50,
-                    endRadius: 380
-                )
-                .blendMode(.softLight)
-
-                LinearGradient(
-                    colors: auroraColors,
-                    startPoint: animate ? .topLeading : .bottomTrailing,
-                    endPoint: animate ? .bottomTrailing : .topLeading
-                )
-                .opacity(0.28)
-                .blur(radius: 80)
-                .blendMode(.screen)
-                .animation(
-                    .easeInOut(duration: 6).repeatForever(autoreverses: true),
-                    value: animate
-                )
-                
-                StaticNebulusHalo(size: geo.size.height)
-                    .frame(width: breatheState && progress < 1 ? geo.size.height : 100, height: breatheState && progress < 1 ? geo.size.height : 100)
-                    .position(
-                        x: geo.size.width / 2,
-                        y: geo.size.height / 2
-                    )
-            }
-        }
-        
-
-    }
     
     func TimerLine(
         progress: Double,
@@ -88,70 +43,130 @@ struct CalmView: View{
         }
     }
     
-    
-    //MARK: -Func logic
-    func startBreathingCycle() {
-        let inhaleDuration: Double = 4.0
-        let exhaleDuration: Double = 6.0
-        
-        withAnimation(.easeInOut(duration: inhaleDuration)) {
-            breatheState = true
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + inhaleDuration) {
-            withAnimation(.easeInOut(duration: exhaleDuration)) {
-                breatheState = false
-            }
+
+    func bigHaloBreathing() -> some View {
+        ZStack {
+            Circle()
+                .fill(
+                    RadialGradient(
+                        gradient: Gradient(colors: [
+                            Color(hex: "DCEBFF").opacity(0.08),
+                            Color(hex: "DCEBFF").opacity(0.04),
+                            .clear
+                        ]),
+                        center: .init(x: 0.46, y: 0.44),
+                        startRadius: 50,
+                        endRadius: 170
+                    )
+                )
+                .blur(radius: 24)
+                .blendMode(.screen)
             
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + exhaleDuration) {
-                if self.progress < 1.0 {
-                    self.startBreathingCycle()
-                }else {
-                    withAnimation(.easeInOut(duration: inhaleDuration)) {
-                        breatheState = true
-                    }
-                }
-            }
+            Circle()
+                .fill(
+                    RadialGradient(
+                        gradient: Gradient(colors: [
+                            Color(hex: "E6F0FF").opacity(0.22),
+                            Color(hex: "E6F0FF").opacity(0.10),
+                            .clear
+                        ]),
+                        center: .init(x: 0.52, y: 0.48),
+                        startRadius: 0,
+                        endRadius: 95
+                    )
+                )
+                .blur(radius: 12)
+                .blendMode(.screen)
         }
     }
     
-    func updateTimer() {
-        if timeElapsed < totalDuration {
-            timeElapsed += 0.05
-            withAnimation {
-                progress = CGFloat(timeElapsed / totalDuration)
-            }
+    func makeCall(to phoneNumber: String) {
+        let formatted = phoneNumber.replacingOccurrences(of: " ", with: "")
+        if let url = URL(string: "tel://\(formatted)"),
+           UIApplication.shared.canOpenURL(url) {
+            UIApplication.shared.open(url)
         }
     }
     
     var body: some View {
         BaseView(viewModel: calmviewModel) { vm in
             ZStack {
-                Color(hex: "0A0F16")
+                GradientBackgroundView()
                     .ignoresSafeArea()
-                background()
-                    .ignoresSafeArea()
+                    ZStack{
+                        bigHaloBreathing()
+                    }
+                    .scaleEffect(animate ? 1.8 : 1.0)
+                    .opacity(isBreatheAnimation ? 0 : (animate ? 1.0 : 0.97))
+                    .animation(
+                        .easeInOut(duration: 6.5)
+                            .repeatForever(autoreverses: true),
+                        value: animate
+                    )
+                    ZStack{
+                        HaloView(startAnimation: isBreatheAnimation)
+                            .animation(
+                            .easeInOut(duration: 6.5)
+                            .repeatForever(autoreverses: true),
+                            value: isBreatheAnimation
+                        )
+                    }
+                    .opacity(isBreatheAnimation ? 1 : 0)
+                    .animation(.easeInOut(duration: 1.0), value: isBreatheAnimation)
+                
                 VStack{
                     Text("LUMIRAi")
                         .font(AppFonts.playFairDisplayReg(size: 24))
                         .foregroundColor(.white)
                         .padding(.top, 10)
-                    Spacer()
-                    Text(vm.action.echo)
+                    if startJournal{
+                        TextEditor(text: $text)
+                            .font(AppFonts.nunito(size: 20))
+                            .foregroundColor(.white)
+                            .scrollContentBackground(.hidden)
+                            .padding(30) // padding di dalam text editor
+                            .background(Color.clear) // transparan
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(Color.white, lineWidth: 1)
+                                    .padding(20)// border putih
+                            )
+                            .frame(minHeight: 200)
+                            .focused($isFocused)
+                    }else {
+                        Spacer()
+                    }
+                    
+                    Text(vm.resultAction.echo)
                         .font(AppFonts.nunito(size: 20))
                         .foregroundColor(.white)
+                        .padding(.horizontal, 20)
+                        .frame(maxWidth: .infinity)
+                        .multilineTextAlignment(.center)
+                        
                     if isStart {
                         TimerLine(
-                            progress: progress,
+                            progress: vm.progress,
                             color: Color(hex: "C9D6E8")
                         )
                         .frame(height: 2)
                     } else{
-                        GlassButtonView(title: "Breathe 1 min"){
+                        GlassButtonView(title: "\(vm.resultAction.button)"){
                             isStart.toggle()
-                            startBreathingCycle()
-                            timer.connect()
+                            vm.startTimer()
+                            switch vm.action {
+                            case .breathe:
+                                isBreatheAnimation = true
+                            case .walk:
+                                AppLogger.shared.log("walk")
+                            case .journal:
+                                startJournal = true
+                                isFocused = true
+                            case .call:
+                                showPickerContact = true
+                            case .unknown:
+                                AppLogger.shared.log("unknown")
+                            }
                         }.padding(.horizontal, 10)
                     }
                 }
@@ -161,14 +176,26 @@ struct CalmView: View{
             .onAppear {
                 animate = true
             }
-            .onReceive(timer) { _ in
-                updateTimer()
+            .sheet(isPresented: $showPickerContact) {
+                ContactPickerView { number in
+                    makeCall(to: number)
+                }
+            }
+            .onTapGesture {
+                UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                isFocused = false
             }
         }
     }
     
 }
 
-//#Preview {
-//    CalmView()
-//}
+#Preview {
+    CalmView(resultAction: GeminiActionModel(
+        emotion: "anxiety",
+        echo: "I realize things feel overwhelming right now, but we can take this one step at a time to find your center again.",
+        action: "journal",
+        durationSec: 300,
+        button: "Start Breathing"
+    ))
+}

@@ -111,6 +111,21 @@ struct GeminiActionModel: Hashable {
     var button: String = ""
 
     init() {}
+    
+    //preview
+    init(
+            emotion: String,
+            echo: String,
+            action: String,
+            durationSec: Int,
+            button: String
+        ) {
+            self.emotion = emotion
+            self.echo = echo
+            self.action = action
+            self.durationSec = durationSec
+            self.button = button
+        }
 
     init(_ json: JSON) {
         emotion = json["emotion"].stringValue

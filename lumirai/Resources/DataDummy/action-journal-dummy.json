@@ -4,7 +4,7 @@
             "content": {
                 "parts": [
                     {
-                        "text": "{ \"echo\": \"Menuangkan perasaan ke dalam tulisan dapat membantu Anda mengurai benang kusut dalam pikiran.\", \"action\": \"journal\", \"duration_sec\": 300, \"button\": \"Mulai Menulis\" }"
+                        "text": "{\"emotion\": \"sadness\",\"echo\": \"I can hear how much pain you are carrying right now, and it is okay to allow yourself the space to feel this way.\",\"action\": \"journal\",\"duration_sec\": 600,\"button\": \"Write it Down\"}"
                     }
                 ],
                 "role": "model"

@@ -4,7 +4,7 @@
             "content": {
                 "parts": [
                     {
-                        "text": "{ \"echo\": \"Berbagi cerita dengan orang terpercaya bisa meringankan beban yang sedang Anda pikul sendirian.\", \"action\": \"call\", \"duration_sec\": 900, \"button\": \"Telepon Sekarang\" }"
+                        "text": "{\"emotion\": \"sadness\",\"echo\": \"You don't have to carry this weight alone; reaching out to someone who cares can make a world of difference.\",\"action\": \"call\",\"duration_sec\": 1200,\"button\": \"Call a Friend\"}"
                     }
                 ],
                 "role": "model"
