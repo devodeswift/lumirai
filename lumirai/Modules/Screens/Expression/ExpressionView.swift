@@ -221,6 +221,7 @@ struct ExpressionView: View {
                 .shadow(color: Color.white.opacity(0.13), radius: 2, x: 0, y: 0)
                 .compositingGroup()
                 .padding(8)
+                .disabled(text.isEmpty)
             }
             
             

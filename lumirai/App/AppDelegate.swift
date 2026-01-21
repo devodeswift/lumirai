@@ -27,6 +27,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
             NFX.sharedInstance().start()
         #endif
         _ = WCSessionManagerNew.shared
+//        AppUserDefaults.shared.lastUserTexts = [LastUserText]()
         return true
     }
     func application(

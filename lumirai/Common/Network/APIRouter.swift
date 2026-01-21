@@ -10,7 +10,7 @@ import Alamofire
 
 enum APIRouter: URLRequestConvertible {
     
-    case generateContent(text: String)
+    case generateContent(dataParam: RequestGeminiModel)
     case getDataArticle
     
     var method: HTTPMethod {
@@ -33,6 +33,14 @@ enum APIRouter: URLRequestConvertible {
         let url = URL(string: Endpoint.baseURL)
         var request = URLRequest(url: url!.appendingPathComponent(path))
         request.method = method
+        request.timeoutInterval = 120
+        switch self {
+        case .generateContent(let dataParam):
+            request.httpBody = try JSONEncoder().encode(dataParam)
+            
+        case .getDataArticle:
+            break
+        }
         return request
     }
     

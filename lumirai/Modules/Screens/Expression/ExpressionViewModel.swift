@@ -28,19 +28,40 @@ class ExpressionViewModel: BaseViewModel {
     
 
     func generateText(text: String) {
+        setLoading(true)
+        defer { setLoading(false) }
         let currentText = text
         let emotion = self.emotion
-        let lastText = AppUserDefaults.shared.lastUserTexts
+//        AppUserDefaults.shared.appendLastUserText(currentText)
+        let lastText = AppUserDefaults.shared.lastUserTexts.map {$0.text}.joined(separator: "\",\"")
         AppLogger.shared.log("cek currentText => \(currentText)")
         AppLogger.shared.log("cek emotion => \(emotion)")
         AppLogger.shared.log("cek lasttext => \(lastText)")
         
+        
+        let request = RequestGeminiModel(
+            system_instruction: SystemInstruction(
+                parts: [
+                    TextPart(text: "You are an empathetic health assistant. Analyze the user's emotions. The user will input their condition in JSON format (without markdown) using the following schema: \"{\"current_text\": string(user's current input in English), \"detect_emotion_hrv\": string (keywords: calm, sadness, anxiety, unknown), \"last_text\": array string(user's inputs from the last 48 hours in English)}\" Provide responses ONLY in JSON format (without markdown) with the following schema: {\"emotion\": string (calm, sadness, anxiety), \"echo\": string (a soothing emotional validation sentence in English), \"action\": string (action keywords such as: breathe, walk, call, journal), \"duration_sec\": integer (recommended duration in seconds), \"button\": string (short button label in English) }")
+                ]
+            ),
+            contents: [
+                Content(
+                    parts: [
+                        TextPart(
+                            text: "{\"current_text\": \"\(currentText)\", \"detect_emotion_hrv\": \"\(emotion)\", \"last_text\":[\"\(lastText)]}"
+                        )
+                    ]
+                )
+            ]
+        )
+        
         Task {
             do {
-//                let articleResponse = try await apiService.getData()
+                let response = try await apiService.generateContent(dataParam: request)
 //                AppLogger.shared.log("cek article response => \(articleResponse.per_page)")
-                let json = JSON(TestDummyData.shared.getDummyJSON(fileName: "action-breath-dummy"))
-                let response = GeminiResponseModel(json)
+//                let json = JSON(TestDummyData.shared.getDummyJSON(fileName: "action-breath-dummy"))
+//                let response = GeminiResponseModel(json)
 
                 guard
                     let candidate = response.candidates.first,
@@ -52,12 +73,12 @@ class ExpressionViewModel: BaseViewModel {
                 }
                 let dataResultAction = action
                 geminiAction = dataResultAction
-                if let dataGeminiAction = geminiAction {
-                    AppLogger.shared.log("cek dataGeminiAction response action=> \(dataGeminiAction.echo)")
+                if geminiAction != nil {
+                    AppUserDefaults.shared.appendLastUserText(currentText)
                 }
-                AppLogger.shared.log("cek gemini response part => \(part.text)")
             } catch {
-                AppLogger.shared.log("Failed to fetch articles: \(error)")
+                AppLogger.shared.log("Failed to fetch response: \(error)")
+                handleError()
             }
         }
     }

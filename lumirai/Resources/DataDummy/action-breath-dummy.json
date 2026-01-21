@@ -4,7 +4,7 @@
             "content": {
                 "parts": [
                     {
-                        "text": "{\"emotion\": \"anxiety\",\"echo\": \"I realize things feel overwhelming right now, but we can take this one step at a time to find your center again.\",\"action\": \"breathe\",\"duration_sec\": 300,\"button\": \"Start Breathing\"}"
+                        "text": "{\"emotion\": \"anxiety\", \"echo\": \"It sounds like you're really grappling with those work thoughts and the physical stress it's causing, and it's completely understandable to feel overwhelmed when your heart is pounding.\", \"action\": \"breathe\", \"duration_sec\": 60, \"button\": \"Breathe\"}"
                     }
                 ],
                 "role": "model"
@@ -14,17 +14,17 @@
         }
     ],
     "usageMetadata": {
-        "promptTokenCount": 107,
-        "candidatesTokenCount": 53,
-        "totalTokenCount": 521,
+        "promptTokenCount": 242,
+        "candidatesTokenCount": 70,
+        "totalTokenCount": 589,
         "promptTokensDetails": [
             {
                 "modality": "TEXT",
-                "tokenCount": 107
+                "tokenCount": 242
             }
         ],
-        "thoughtsTokenCount": 361
+        "thoughtsTokenCount": 277
     },
     "modelVersion": "gemini-2.5-flash",
-    "responseId": "fLtlabKIN_L_4-EPmdWdsQo"
+    "responseId": "avZuaYzbFN_JjuMP38_x6Qk"
 }
