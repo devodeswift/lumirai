@@ -45,7 +45,9 @@ struct ExpressionView: View {
                             width: geo.size.width * 0.35,
                             height: geo.size.width * 0.35
                         )
-                        .scaleEffect(scale + shimmer)
+                        .scaleEffect(isListening
+                                     ? vm.haloPulse
+                                     : scale)
                         .offset(drift)
                     }
                     .position(
@@ -56,29 +58,10 @@ struct ExpressionView: View {
                     .onAppear {
                         startBreathing()
                         startDrift()
-                        startShimmer()
                         startDriftParticle()
                     }
                     
                 }
-//                ZStack{
-//                    bigHaloBreathing(vm : viewmodel)
-//                }
-//                .scaleEffect(
-//                    isListening
-//                            ? vm.haloPulse
-//                            : (animate ? 1.8 : 1.0)
-//                )
-//                .opacity(animate ? 1.0 : 0.97)
-//                .animation(
-//                    .easeInOut(duration: isListening ? 0.7 : 6.5),
-//                    value: isListening
-//                )
-//                .animation(
-//                    .easeInOut(duration: 6.5)
-//                        .repeatForever(autoreverses: true),
-//                    value: animate
-//                )
                 
                 VStack(alignment: .center) {
                     Text(vm.textTitle)
@@ -391,34 +374,23 @@ struct ExpressionView: View {
     }
     
     private func startDrift() {
+        guard !isListening else {
+            drift = .zero
+            return
+        }
         let duration = jitter(8.0, percent: 0.15)
-
-            withAnimation(.easeInOut(duration: duration)) {
-                drift = CGSize(
-                    width: Double.random(in: -40...40),
-                    height: Double.random(in: -40...40)
-                )
-            }
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + duration * 0.9) {
-                startDrift()
-            }
+        
+        withAnimation(.easeInOut(duration: duration)) {
+            drift = CGSize(
+                width: Double.random(in: -40...40),
+                height: Double.random(in: -40...40)
+            )
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + duration * 0.9) {
+            startDrift()
+        }
     }
-    
-//    private func startDriftParticle() {
-//        let duration = jitter(8.0, percent: 0.15)
-//
-//            withAnimation(.easeInOut(duration: duration)) {
-//                driftParticle = CGSize(
-//                    width: Double.random(in: -8...8),
-//                    height: Double.random(in: -8...8)
-//                )
-//            }
-//
-//        DispatchQueue.main.asyncAfter(deadline: .now() + duration * 0.9) {
-//                startDriftParticle()
-//            }
-//    }
     
     private func startDriftParticle() {
         Timer.scheduledTimer(withTimeInterval: 10, repeats: true) { _ in
