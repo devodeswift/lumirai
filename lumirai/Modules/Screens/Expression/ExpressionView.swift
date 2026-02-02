@@ -16,30 +16,69 @@ struct ExpressionView: View {
     @State private var animate: Bool = false
     @State private var float = false
     @State private var goToCalm = false
+    @StateObject private var breath = HaloBreathingController()
+    @State private var scale: CGFloat = 1.0
+    @State private var coreOpacity: Double = 0.85
+    @State private var drift: CGSize = .zero
+    @State private var driftParticle: CGSize = .zero
+    @State private var shimmer: CGFloat = 0
+//    @State private var animate = false
     
     var body: some View {
         BaseView(viewModel: viewmodel) { vm in
             ZStack {
-                GradientBackgroundView()
-                    .ignoresSafeArea()
-                ZStack{
-                    bigHaloBreathing(vm : viewmodel)
+                GeometryReader { geo in
+                    HaloDriftView {
+                        ZStack {
+                            
+                            ParticleShimmerViewNew(
+                                animate: $animate,
+                                scale: $scale,
+                                countParticles: 100
+                            )
+                            .offset(driftParticle)
+                            HaloLightLayer(opacity: 0.35 * coreOpacity, blur: 60 + 15)
+                            HaloLightLayer(opacity: 0.6  * coreOpacity, blur: 60)
+                            HaloLightLayer(opacity: 1.0  * coreOpacity, blur: 60 - 10)
+                        }
+                        .frame(
+                            width: geo.size.width * 0.35,
+                            height: geo.size.width * 0.35
+                        )
+                        .scaleEffect(scale + shimmer)
+                        .offset(drift)
+                    }
+                    .position(
+                        x: geo.size.width / 2,
+                        y: geo.size.height / 2
+                    )
+                    
+                    .onAppear {
+                        startBreathing()
+                        startDrift()
+                        startShimmer()
+                        startDriftParticle()
+                    }
+                    
                 }
-                .scaleEffect(
-                    isListening
-                            ? vm.haloPulse
-                            : (animate ? 1.8 : 1.0)
-                )
-                .opacity(animate ? 1.0 : 0.97)
-                .animation(
-                    .easeInOut(duration: isListening ? 0.7 : 6.5),
-                    value: isListening
-                )
-                .animation(
-                    .easeInOut(duration: 6.5)
-                        .repeatForever(autoreverses: true),
-                    value: animate
-                )
+//                ZStack{
+//                    bigHaloBreathing(vm : viewmodel)
+//                }
+//                .scaleEffect(
+//                    isListening
+//                            ? vm.haloPulse
+//                            : (animate ? 1.8 : 1.0)
+//                )
+//                .opacity(animate ? 1.0 : 0.97)
+//                .animation(
+//                    .easeInOut(duration: isListening ? 0.7 : 6.5),
+//                    value: isListening
+//                )
+//                .animation(
+//                    .easeInOut(duration: 6.5)
+//                        .repeatForever(autoreverses: true),
+//                    value: animate
+//                )
                 
                 VStack(alignment: .center) {
                     Text(vm.textTitle)
@@ -102,6 +141,7 @@ struct ExpressionView: View {
                     text = newValue
                 }
             }
+            .background(Color(hex:"#0A0F16"))
         }
     }
     
@@ -310,6 +350,99 @@ struct ExpressionView: View {
                 .blendMode(.screen)
         }
     }
+    
+    private func jitter(_ base: Double, percent: Double = 0.08) -> Double {
+        let delta = base * percent
+        return base + Double.random(in: -delta...delta)
+    }
+    
+    private func startBreathing() {
+        inhale()
+    }
+
+    private func inhale() {
+        let duration = jitter(4.2)
+        let targetScale = jitter(1, percent: 0.06)
+        let targetOpacity = jitter(0.76, percent: 0.05)
+        
+        withAnimation(.easeInOut(duration: duration)) {
+            scale = targetScale
+            coreOpacity = targetOpacity
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
+            exhale()
+        }
+    }
+
+    private func exhale() {
+        let duration = jitter(6.1)
+        let targetScale = jitter(1.5, percent: 0.04)
+        let targetOpacity = jitter(0.88, percent: 0.04)
+        
+        withAnimation(.easeInOut(duration: duration)) {
+            scale = targetScale
+            coreOpacity = targetOpacity
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
+            inhale()
+        }
+    }
+    
+    private func startDrift() {
+        let duration = jitter(8.0, percent: 0.15)
+
+            withAnimation(.easeInOut(duration: duration)) {
+                drift = CGSize(
+                    width: Double.random(in: -40...40),
+                    height: Double.random(in: -40...40)
+                )
+            }
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + duration * 0.9) {
+                startDrift()
+            }
+    }
+    
+//    private func startDriftParticle() {
+//        let duration = jitter(8.0, percent: 0.15)
+//
+//            withAnimation(.easeInOut(duration: duration)) {
+//                driftParticle = CGSize(
+//                    width: Double.random(in: -8...8),
+//                    height: Double.random(in: -8...8)
+//                )
+//            }
+//
+//        DispatchQueue.main.asyncAfter(deadline: .now() + duration * 0.9) {
+//                startDriftParticle()
+//            }
+//    }
+    
+    private func startDriftParticle() {
+        Timer.scheduledTimer(withTimeInterval: 10, repeats: true) { _ in
+            withAnimation(.easeInOut(duration: 10)) {
+                driftParticle = CGSize(
+                    width: CGFloat.random(in: -20...20),
+                    height: CGFloat.random(in: -20...20)
+                )
+            }
+        }
+    }
+    
+    private func startShimmer() {
+        withAnimation(
+            .easeInOut(duration: jitter(6, percent: 0.3))
+        ) {
+            shimmer = Double.random(in: -0.015...0.015)
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+            startShimmer()
+        }
+    }
+
 }
 
 

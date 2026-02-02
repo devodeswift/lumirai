@@ -15,153 +15,137 @@ struct Subscription: View {
 
     var body: some View {
         BaseView( viewModel: viewModel ) { vm in
-            
-            
-            ZStack(alignment: .top){
-                GradientBackgroundView()
-                    .ignoresSafeArea()
-                VStack {
-                    Image("img_bg_aurora")
-                        .resizable()
-                        .scaledToFill()
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 280)
-                        .clipShape(BottomTriangleShape())
-                        .padding(.top,0)
-                    Spacer()
-                    
-                }
-                .ignoresSafeArea()
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                
-                VStack{
-                    HeaderView{
-                        router.popToRoot()
-                    }
-                    .padding(.top, 16)
-                    Text(vm.textDescSubscription)
-                        .font(AppFonts.nunito(size: 24))
-                        .foregroundColor(.white)
-                        .padding(.top, 200)
-                    
-                    Button(action : {
-                        //Light
-                    })
-                    {
-                        HStack{
-                            Text(vm.textLightPlan)
-                                .font(AppFonts.nunito(size: 20))
-                                .foregroundColor(.white.opacity(0.8))
-                            Spacer()
-                            Text(vm.textPriceLightPlan)
-                                .font(AppFonts.nunito(size: 20))
-                                .foregroundColor(.white.opacity(0.8))
+            ZStack{
+                Color(.black).ignoresSafeArea()
+                ScrollView(.vertical, showsIndicators: false){
+                    VStack(alignment: .center) {
+                        Text(vm.textTitle)
+                            .font(AppFonts.playFairDisplayReg(size: 24))
+                            .foregroundColor(.white)
+                        HaloDriftView {
+                            ZStack {
+                                HaloLightLayer(opacity: 0.35 * vm.coreOpacity, blur: 60 + 15, colorCore: Color(hex: "#C8D8E8"), colorOuter: Color(hex: "#A0B8D0"))
+                                HaloLightLayer(opacity: 0.6  * vm.coreOpacity, blur: 60, colorCore: Color(hex: "#C8D8E8"), colorOuter: Color(hex: "#A0B8D0"))
+                                HaloLightLayer(opacity: 1.0  * vm.coreOpacity, blur: 60 - 10, colorCore: Color(hex: "#C8D8E8"), colorOuter: Color(hex: "#A0B8D0"))
+                            }
+                            .frame(
+                                width: 120,
+                                height: 120
+                            )
+                            .scaleEffect(vm.scale)
                         }
-                        .padding(.horizontal)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 60)
-                    .background(
-                        Color.black.opacity(0.18)
-                    )
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color.white.opacity(0.25), lineWidth: 1)
-                    )
-                    .padding(.top, 40)
-                    .padding(.horizontal)
-                    
-                    Button(action : {
-                        //One
-                    })
-                    {
-                        HStack{
-                            Text(vm.textOnePlan)
-                                .font(AppFonts.nunito(size: 20))
-                                .foregroundColor(.white.opacity(0.8))
-                            Spacer()
-                            Text(vm.textPriceOnePlan)
-                                .font(AppFonts.nunito(size: 20))
-                                .foregroundColor(.white.opacity(0.8))
+                        .onAppear {
+                            vm.startBreathing()
                         }
-                        .padding(.horizontal)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 60)
-                    .background(
-                        Color.black.opacity(0.18)
-                    )
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color.white.opacity(0.25), lineWidth: 1)
-                    )
-                    .padding(.top, 10)
-                    .padding(.horizontal)
-                    
-                    Button(action : {
-                        //Founder
-                    })
-                    {
-                        HStack{
-                            Text(vm.textFounderPlan)
-                                .font(AppFonts.nunito(size: 20))
-                                .foregroundColor(.white.opacity(0.8))
-                            Spacer()
-                            Text(vm.textPriceFounderPlan)
-                                .font(AppFonts.nunito(size: 20))
-                                .foregroundColor(.white.opacity(0.8))
-                        }
-                        .padding(.horizontal)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 60)
-                    .background(
-                        Color.black.opacity(0.18)
-                    )
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color.white.opacity(0.25), lineWidth: 1)
-                    )
-                    .padding(.top, 10)
-                    .padding(.horizontal)
-                    Spacer()
-                    
-                    Button(action : {
-                        router.push(.expression)
-                    })
-                    {
-                        HStack{
-                            Text(vm.textBtnContinue)
-                                .font(AppFonts.nunito(size: 20))
-                                .foregroundColor(.white.opacity(0.8))
+                        .padding(.top, 50)
+                        
+                        Text(vm.textContinue)
+                            .font(AppFonts.playFairDisplayReg(size: 28))
+                            .foregroundColor(.white)
+                            .padding(.top, 30)
+                        
+                        VStack{
+                            Text(vm.textAnnualPrice)
+                                .font(AppFonts.playFairDisplayReg(size: 24))
+                                .foregroundColor(.white)
+                            Text(vm.text7Days)
+                                .font(AppFonts.playFairDisplayReg(size: 14))
+                                .foregroundColor(.white)
+                            
+                            Button(action: {
+                                router.push(.expression)
+                            }) {
+                                Text(vm.textSubscribeYearly)
+                                    .font(AppFonts.playFairDisplayReg(size: 16))
+                                    .foregroundColor(.black)
+                                    .padding(.horizontal, 20)
+                            }
+                            .frame(height: 50)
+                            .frame(maxWidth: .infinity)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 16)
+                                    .stroke(Color(hex: "#2A2A2A"), lineWidth: 1)
+                            )
+                            .background(
+                                RoundedRectangle(cornerRadius: 16)
+                                    .fill(.white)
+                            )
                             
                         }
-                        .padding(.horizontal)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 44)
-                    .background(
-                        RoundedRectangle(cornerRadius: 8)
-                            .fill(
-                                LinearGradient(
-                                    colors: [
-                                        Color(hex: "2A6F8F"),
-                                        Color(hex: "1E546F"),
-                                    ],
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
-                                )
+                        .padding(.vertical, 20)
+                        .padding(.horizontal, 20)
+                        .frame(maxWidth: 400)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 16)
+                                .stroke(Color(hex: "#2A2A2A"), lineWidth: 1)
+                        )
+                        .background(
+                            RoundedRectangle(cornerRadius: 16)
+                                .fill(Color(hex: "#1A1A1A"))
+                        )
+                        
+                        Spacer()
+                            .frame(height: 16)
+                        
+                        VStack{
+                            Text(vm.textMonthlyPrice)
+                                .font(AppFonts.playFairDisplayReg(size: 24))
+                                .foregroundColor(.white)
+                            
+                            Text(vm.text7Days)
+                                .font(AppFonts.playFairDisplayReg(size: 14))
+                                .foregroundColor(.white)
+                            
+                            
+                            Button(action: {
+                                router.push(.expression)
+                            }) {
+                                Text(vm.textTrial)
+                                    .font(AppFonts.playFairDisplayReg(size: 16))
+                                    .foregroundColor(.black)
+                                    .padding(.horizontal, 20)
+                            }
+                            .frame(height: 50)
+                            .frame(maxWidth: .infinity)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 16)
+                                    .stroke(Color(hex: "#2A2A2A"), lineWidth: 1)
                             )
-                    )
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color.white.opacity(0.25), lineWidth: 1)
-                    )
-                    .padding(.top, 10)
-                    .padding(.horizontal)
+                            .background(
+                                RoundedRectangle(cornerRadius: 16)
+                                    .fill(.white)
+                            )
+                            
+                        }
+                        .padding(.vertical, 24)
+                        .padding(.horizontal, 20)
+                        .frame(maxWidth: 400)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 16)
+                                .stroke(Color(hex: "#2A2A2A"), lineWidth: 1)
+                        )
+                        .background(
+                            RoundedRectangle(cornerRadius: 16)
+                                .fill(Color(hex: "#1A1A1A"))
+                        )
+                        
+                        Text(vm.textDescription)
+                            .font(AppFonts.playFairDisplayReg(size: 15))
+                            .foregroundColor(.white.opacity(0.7))
+                            .padding(.horizontal, 20)
+                            .multilineTextAlignment(.center)
+                            .padding(.top, 32)
+                        Spacer()
+                        
+                        Text(vm.textCancel)
+                            .font(AppFonts.playFairDisplayReg(size: 13))
+                            .foregroundColor(.white.opacity(0.4))
+                            .padding(.horizontal, 20)
+                            .padding(.bottom, 0)
+                            .multilineTextAlignment(.center)
+                    }
+                    .padding(.horizontal, 24)
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .padding(.horizontal, 32)
             }
             .navigationBarBackButtonHidden(true)
         }
