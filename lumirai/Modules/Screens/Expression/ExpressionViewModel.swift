@@ -26,6 +26,25 @@ class ExpressionViewModel: BaseViewModel {
     
     let apiService = APIService()
     
+    func getResponse(text: String) {
+        let getText = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        let lengthChar = getText.count
+        
+        if lengthChar > 0 {
+            //silence
+        }
+        
+        if lengthChar < 20 {
+            
+        }
+        
+        if lengthChar > 80 {
+            
+        }
+        
+        
+        
+    }
 
     func generateText(text: String) {
         setLoading(true)

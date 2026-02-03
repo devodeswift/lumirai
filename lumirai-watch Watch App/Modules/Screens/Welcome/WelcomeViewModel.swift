@@ -44,14 +44,6 @@ class WelcomeViewModel: BaseViewModel {
                 group.leave()
             }
 
-            // Breathing Rate
-            group.enter()
-            HealthKitManager.shared.fetchLatestBreathingRate { rate in
-                if let rate {
-                    payload["breathingRateValue"] = (rate * 100).rounded() / 100
-                }
-                group.leave()
-            }
 
             group.notify(queue: .main) {
                 guard !payload.isEmpty else { return }

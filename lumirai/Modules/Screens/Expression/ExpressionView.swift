@@ -344,8 +344,8 @@ struct ExpressionView: View {
     }
 
     private func inhale() {
-        let duration = jitter(4.2)
-        let targetScale = jitter(1, percent: 0.06)
+        let duration = jitter(AppInfo.shared.getDurationInHale)
+        let targetScale = jitter(0.96, percent: 0.06)
         let targetOpacity = jitter(0.76, percent: 0.05)
         
         withAnimation(.easeInOut(duration: duration)) {
@@ -359,8 +359,8 @@ struct ExpressionView: View {
     }
 
     private func exhale() {
-        let duration = jitter(6.1)
-        let targetScale = jitter(1.5, percent: 0.04)
+        let duration = jitter(AppInfo.shared.getDurationExHale)
+        let targetScale = jitter(1.15, percent: 0.04)
         let targetOpacity = jitter(0.88, percent: 0.04)
         
         withAnimation(.easeInOut(duration: duration)) {
@@ -378,7 +378,7 @@ struct ExpressionView: View {
             drift = .zero
             return
         }
-        let duration = jitter(8.0, percent: 0.15)
+        let duration = jitter(6.0, percent: 0.15)
         
         withAnimation(.easeInOut(duration: duration)) {
             drift = CGSize(
@@ -393,8 +393,9 @@ struct ExpressionView: View {
     }
     
     private func startDriftParticle() {
-        Timer.scheduledTimer(withTimeInterval: 10, repeats: true) { _ in
-            withAnimation(.easeInOut(duration: 10)) {
+        let duration = jitter(6, percent: 0.15)
+        Timer.scheduledTimer(withTimeInterval: duration, repeats: true) { _ in
+            withAnimation(.easeInOut(duration: duration)) {
                 driftParticle = CGSize(
                     width: CGFloat.random(in: -20...20),
                     height: CGFloat.random(in: -20...20)

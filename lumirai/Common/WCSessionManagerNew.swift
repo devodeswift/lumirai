@@ -52,7 +52,7 @@ final class WCSessionManagerNew: NSObject, WCSessionDelegate, ObservableObject {
         _ session: WCSession,
         didReceiveUserInfo userInfo: [String : Any]
     ) {
-        print("📩 UserInfo test received:", userInfo)
+        AppLogger.shared.log("📩 UserInfo test received: \(userInfo)")
         let hrv = userInfo["hrvValue"] as? Double
         let heartRate = userInfo["heartRateValue"] as? Double
         let breathingRate = userInfo["breathingRateValue"] as? Double
