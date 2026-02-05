@@ -22,6 +22,8 @@ struct ExpressionView: View {
     @State private var drift: CGSize = .zero
     @State private var driftParticle: CGSize = .zero
     @State private var shimmer: CGFloat = 0
+    @State private var textOpacity: Double = 0.0
+    @State private var getResponse: Bool = false
 //    @State private var animate = false
     
     var body: some View {
@@ -34,7 +36,7 @@ struct ExpressionView: View {
                             ParticleShimmerViewNew(
                                 animate: $animate,
                                 scale: $scale,
-                                countParticles: 100
+                                countParticles: 40
                             )
                             .offset(driftParticle)
                             HaloLightLayer(opacity: 0.35 * coreOpacity, blur: 60 + 15)
@@ -57,7 +59,7 @@ struct ExpressionView: View {
                     
                     .onAppear {
                         startBreathing()
-                        startDrift()
+//                        startDrift()
                         startDriftParticle()
                     }
                     
@@ -69,10 +71,40 @@ struct ExpressionView: View {
                         .foregroundColor(.white)
                         .padding(.top, 10)
                     Spacer()
-                    textScroll(vm: vm)
-                    bottomView(vm: vm)
-                        .frame(maxWidth: .infinity, maxHeight: 40)
-                        .padding(.horizontal, 20)
+                    
+                    if !vm.getResponse {
+                        textScroll(vm: vm)
+                        if !isListening {
+                            GlassButtonView(title: "Write") {
+                                isFocused = true
+                            }
+                        }
+                        
+                        GlassButtonView(title: !isListening ? "Speak" : "Finish") {
+                            if isListening {
+                                vm.getResponse(text: text)
+                            }
+                            withAnimation(.spring(response: 0.35, dampingFraction: 0.82)) {
+                                isListening.toggle()
+                            }
+                            
+                        }
+                    }
+                    if let text = vm.textResponse {
+                        Text(text)
+                            .font(AppFonts.nunito(size: 20))
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 20)
+                            .multilineTextAlignment(.center)
+                            .opacity(textOpacity)
+                            .onAppear {
+                                animateTextLifecycle(vm: vm)
+                            }
+                    }
+                    
+//                    bottomView(vm: vm)
+//                        .frame(maxWidth: .infinity, maxHeight: 40)
+//                        .padding(.horizontal, 20)
                 }
             }
             .onAppear {
@@ -211,7 +243,8 @@ struct ExpressionView: View {
             if !isListening {
                 Button(action: {
 //                    goToCalm = true
-                    vm.generateText(text: text)
+//                    vm.generateText(text: text)
+                    vm.getResponse(text: text)
                 }) {
                 Image(systemName: "chevron.right")
                     .font(.system(size: 24, weight: .medium))
@@ -264,6 +297,11 @@ struct ExpressionView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .focused($isFocused)
                         .padding(18)
+                        .onChange(of: isFocused) { focused in
+                            if !focused {
+                                vm.getResponse(text: text)
+                            }
+                        }
                     
                     if text.isEmpty {
                         Text(vm.textPlaceholder)
@@ -413,6 +451,37 @@ struct ExpressionView: View {
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
             startShimmer()
+        }
+    }
+    
+    private func animateTextLifecycle(vm: ExpressionViewModel) {
+        guard let text = vm.textResponse else { return }
+        
+        let charactersPerSecond: Double = 14
+        let minStay: Double = 1.5
+        let maxStay: Double = 6.0
+        
+        let stayDuration = min(
+            max(Double(text.count) / charactersPerSecond, minStay),
+            maxStay
+        )
+        
+        // Fade in
+        withAnimation(.easeInOut(duration: 0.25)) {
+            textOpacity = 1.0
+        }
+        
+        // Stay
+        DispatchQueue.main.asyncAfter(deadline: .now() + stayDuration) {
+            // Fade out
+            withAnimation(.easeInOut(duration: 0.5)) {
+                textOpacity = 0.0
+            }
+            
+            // Clear text after fade out
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.55) {
+                vm.textResponse = nil
+            }
         }
     }
 

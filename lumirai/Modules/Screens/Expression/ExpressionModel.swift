@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftyJSON
 
 enum EmotionState {
     case calm
@@ -101,5 +102,15 @@ struct EmotionEngine {
 struct LastUserText: Codable {
     let text: String
     let savedAt: Date
+}
+
+struct templatesModel {
+    var dataTemplates: [String] = []
+    
+    init() {}
+
+    init(_ json: JSON) {
+        dataTemplates = json["data_templates"].arrayValue.map { $0.stringValue }
+    }
 }
 

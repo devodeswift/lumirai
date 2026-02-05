@@ -21,12 +21,15 @@ class ExpressionViewModel: BaseViewModel {
     @Published var speech = SpeechRecognizer()
     @Published var hrv: Double?
     @Published var geminiAction: GeminiActionModel?
+    @Published var textResponse: String?
+    @Published var getResponse: Bool = false
     private var emotion: EmotionState = .unknown
     private var hrvBaseline: Double?
     
     let apiService = APIService()
     
     func getResponse(text: String) {
+        getResponse = true
         let getText = text.trimmingCharacters(in: .whitespacesAndNewlines)
         let lengthChar = getText.count
         
@@ -35,15 +38,27 @@ class ExpressionViewModel: BaseViewModel {
         }
         
         if lengthChar < 20 {
+            let fileJsonPresence = JSON(TestDummyData.shared.getDummyJSON(fileName: "template-presence"))
+            let dataTemplatesPresence = templatesModel(fileJsonPresence)
+            if let resultPresence = dataTemplatesPresence.dataTemplates.randomElement() {
+                AppLogger.shared.log("result Presence: \(resultPresence)")
+                textResponse = resultPresence
+            }
             
         }
         
         if lengthChar > 80 {
+            let fileJsonGrounding = JSON(TestDummyData.shared.getDummyJSON(fileName: "template-grounding"))
+            let dataTemplatesGrounding = templatesModel(fileJsonGrounding)
+            if let resultGrounding = dataTemplatesGrounding.dataTemplates.randomElement() {
+                AppLogger.shared.log("result Grounding: \(resultGrounding)")
+                textResponse = resultGrounding
+            }
             
         }
-        
-        
-        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+            self.getResponse = false
+        }
     }
 
     func generateText(text: String) {

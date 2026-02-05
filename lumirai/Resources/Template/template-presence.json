@@ -1,5 +1,5 @@
 {
-    "template_presence": [
+    "data_templates": [
         "I'm here.",
         "With you.",
         "Still here."
