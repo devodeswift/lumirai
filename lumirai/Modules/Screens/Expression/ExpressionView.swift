@@ -32,13 +32,6 @@ struct ExpressionView: View {
                 GeometryReader { geo in
                     HaloDriftView {
                         ZStack {
-                            
-                            ParticleShimmerViewNew(
-                                animate: $animate,
-                                scale: $scale,
-                                countParticles: 40
-                            )
-                            .offset(driftParticle)
                             HaloLightLayer(opacity: 0.35 * coreOpacity, blur: 60 + 15)
                             HaloLightLayer(opacity: 0.6  * coreOpacity, blur: 60)
                             HaloLightLayer(opacity: 1.0  * coreOpacity, blur: 60 - 10)
@@ -60,11 +53,18 @@ struct ExpressionView: View {
                     .onAppear {
                         startBreathing()
 //                        startDrift()
-                        startDriftParticle()
+//                        startDriftParticle()
                     }
                     
                 }
-                
+                ZStack{
+                        ParticleShimmerViewNew(
+                            animate: $animate,
+                            scale: $scale,
+                            countParticles: 35
+                        )
+//                        .offset(driftParticle)
+                }
                 VStack(alignment: .center) {
                     Text(vm.textTitle)
                         .font(AppFonts.playFairDisplayReg(size: 24))

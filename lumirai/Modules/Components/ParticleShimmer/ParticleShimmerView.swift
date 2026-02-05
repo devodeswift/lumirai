@@ -177,7 +177,7 @@ struct ParticleShimmerViewNew: View {
                         .frame(width: p.size, height: p.size)
                         .position(p.position(at: now))
                         .opacity(p.opacity(at: now))
-                        .scaleEffect(scale)
+//                        .scaleEffect(scale)
                 }
             }
             .onAppear {
