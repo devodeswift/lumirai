@@ -16,45 +16,40 @@ class CalmViewModel: BaseViewModel {
     @Published var journalText : String = ""
     @FocusState private var isFocused : Bool
     
+    
+    
     var resultAction: GeminiActionModel
     private var timer: Timer?
-    
+    var onFinished: (() -> Void)?
     
     init(resultAction: GeminiActionModel){
         self.resultAction = resultAction
         self.action = MicroActionModel(rawValue: resultAction.action) ?? .unknown
         super.init()
+        self.startTimer(duration: Double(resultAction.durationSec))
     }
     
+    func startTimer(duration: Double = 8) {
+        stopTimer()
+        timeElapsed = 0
+        progress = 0
+        
+        timer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { [weak self] _ in
+            guard let self else { return }
+            
+            self.timeElapsed += 0.05
+            self.progress = min(self.timeElapsed / duration, 1)
+            
+            if self.timeElapsed >= duration {
+                self.stopTimer()
+                self.onFinished?()
+            }
+        }
+    }
     
-    func startTimer() {
-            timer?.invalidate()
-            timeElapsed = 0
-            progress = 0
-
-            timer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { [weak self] _ in
-                self?.updateTimer()
-            }
-        }
-
-        func stopTimer() {
-            timer?.invalidate()
-            timer = nil
-        }
-
-        func updateTimer() {
-            let actionDuration: Double = Double(resultAction.durationSec)
-            guard timeElapsed < actionDuration else {
-                stopTimer()
-                return
-            }
-
-            timeElapsed += 0.05
-
-            withAnimation(.linear(duration: 0.05)) {
-                progress = CGFloat(timeElapsed / actionDuration)
-            }
-        }
-    
+    func stopTimer() {
+        timer?.invalidate()
+        timer = nil
+    }
     
 }

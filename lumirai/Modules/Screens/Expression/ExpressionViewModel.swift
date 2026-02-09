@@ -21,7 +21,7 @@ class ExpressionViewModel: BaseViewModel {
     @Published var speech = SpeechRecognizer()
     @Published var hrv: Double?
     @Published var geminiAction: GeminiActionModel?
-    @Published var textResponse: String?
+    @Published var textResponse: String = ""
     @Published var getResponse: Bool = false
     private var emotion: EmotionState = .unknown
     private var hrvBaseline: Double?
@@ -33,19 +33,16 @@ class ExpressionViewModel: BaseViewModel {
         let getText = text.trimmingCharacters(in: .whitespacesAndNewlines)
         let lengthChar = getText.count
         
-        if lengthChar > 0 {
-            //silence
-        }
         
-        if lengthChar < 20 {
-            let fileJsonPresence = JSON(TestDummyData.shared.getDummyJSON(fileName: "template-presence"))
-            let dataTemplatesPresence = templatesModel(fileJsonPresence)
-            if let resultPresence = dataTemplatesPresence.dataTemplates.randomElement() {
-                AppLogger.shared.log("result Presence: \(resultPresence)")
-                textResponse = resultPresence
-            }
-            
-        }
+//        if lengthChar < 20 {
+//            let fileJsonPresence = JSON(TestDummyData.shared.getDummyJSON(fileName: "template-presence"))
+//            let dataTemplatesPresence = templatesModel(fileJsonPresence)
+//            if let resultPresence = dataTemplatesPresence.dataTemplates.randomElement() {
+//                AppLogger.shared.log("result Presence: \(resultPresence)")
+//                textResponse = resultPresence
+//            }
+//            
+//        }
         
         if lengthChar > 80 {
             let fileJsonGrounding = JSON(TestDummyData.shared.getDummyJSON(fileName: "template-grounding"))
@@ -55,10 +52,21 @@ class ExpressionViewModel: BaseViewModel {
                 textResponse = resultGrounding
             }
             
+        } else {
+            let fileJsonPresence = JSON(TestDummyData.shared.getDummyJSON(fileName: "template-presence"))
+            let dataTemplatesPresence = templatesModel(fileJsonPresence)
+            if let resultPresence = dataTemplatesPresence.dataTemplates.randomElement() {
+                AppLogger.shared.log("result Presence: \(resultPresence)")
+                textResponse = resultPresence
+            }
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
-            self.getResponse = false
-        }
+        
+        var dataGeminiAction = GeminiActionModel()
+        dataGeminiAction.action = "test"
+        dataGeminiAction.echo = textResponse
+        dataGeminiAction.durationSec = 60
+        geminiAction = dataGeminiAction
+    
     }
 
     func generateText(text: String) {

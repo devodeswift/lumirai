@@ -72,39 +72,29 @@ struct ExpressionView: View {
                         .padding(.top, 10)
                     Spacer()
                     
-                    if !vm.getResponse {
-                        textScroll(vm: vm)
-                        if !isListening {
-                            GlassButtonView(title: "Write") {
-                                isFocused = true
-                            }
+                    
+                    textScroll(vm: vm)
+                    if !isListening {
+                        GlassButtonView(title: "Write") {
+                            isFocused = true
                         }
-                        
-                        GlassButtonView(title: !isListening ? "Speak" : "Finish") {
-                            if isListening {
-                                vm.getResponse(text: text)
-                            }
-                            withAnimation(.spring(response: 0.35, dampingFraction: 0.82)) {
-                                isListening.toggle()
-                            }
-                            
-                        }
-                    }
-                    if let text = vm.textResponse {
-                        Text(text)
-                            .font(AppFonts.nunito(size: 20))
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 20)
-                            .multilineTextAlignment(.center)
-                            .opacity(textOpacity)
-                            .onAppear {
-                                animateTextLifecycle(vm: vm)
-                            }
                     }
                     
-//                    bottomView(vm: vm)
-//                        .frame(maxWidth: .infinity, maxHeight: 40)
-//                        .padding(.horizontal, 20)
+                    GlassButtonView(title: !isListening ? "Speak" : "Finish") {
+                        if isListening {
+                            vm.getResponse(text: text)
+                        }
+                        withAnimation(.spring(response: 0.35, dampingFraction: 0.82)) {
+                            isListening.toggle()
+                        }
+                        
+                    }
+                    
+                    
+                    
+                    //                    bottomView(vm: vm)
+                    //                        .frame(maxWidth: .infinity, maxHeight: 40)
+                    //                        .padding(.horizontal, 20)
                 }
             }
             .onAppear {
@@ -138,6 +128,7 @@ struct ExpressionView: View {
                 guard let action else { return }
                 router.push(.calm(data: action))
                 vm.geminiAction = nil
+                text = ""
             }
             .onReceive(vm.pulseManager.$amplitude) { value in
                 
@@ -454,36 +445,36 @@ struct ExpressionView: View {
         }
     }
     
-    private func animateTextLifecycle(vm: ExpressionViewModel) {
-        guard let text = vm.textResponse else { return }
-        
-        let charactersPerSecond: Double = 14
-        let minStay: Double = 1.5
-        let maxStay: Double = 6.0
-        
-        let stayDuration = min(
-            max(Double(text.count) / charactersPerSecond, minStay),
-            maxStay
-        )
-        
-        // Fade in
-        withAnimation(.easeInOut(duration: 0.25)) {
-            textOpacity = 1.0
-        }
-        
-        // Stay
-        DispatchQueue.main.asyncAfter(deadline: .now() + stayDuration) {
-            // Fade out
-            withAnimation(.easeInOut(duration: 0.5)) {
-                textOpacity = 0.0
-            }
-            
-            // Clear text after fade out
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.55) {
-                vm.textResponse = nil
-            }
-        }
-    }
+//    private func animateTextLifecycle(vm: ExpressionViewModel) {
+//        guard let text = vm.textResponse else { return }
+//        
+//        let charactersPerSecond: Double = 14
+//        let minStay: Double = 1.5
+//        let maxStay: Double = 6.0
+//        
+//        let stayDuration = min(
+//            max(Double(text.count) / charactersPerSecond, minStay),
+//            maxStay
+//        )
+//        
+//        // Fade in
+//        withAnimation(.easeInOut(duration: 0.25)) {
+//            textOpacity = 1.0
+//        }
+//        
+//        // Stay
+//        DispatchQueue.main.asyncAfter(deadline: .now() + stayDuration) {
+//            // Fade out
+//            withAnimation(.easeInOut(duration: 0.5)) {
+//                textOpacity = 0.0
+//            }
+//            
+//            // Clear text after fade out
+//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.55) {
+//                vm.textResponse = nil
+//            }
+//        }
+//    }
 
 }
 

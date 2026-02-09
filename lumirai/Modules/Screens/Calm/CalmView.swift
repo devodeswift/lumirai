@@ -11,182 +11,114 @@ import SceneKit
 import Combine
 
 struct CalmView: View{
-    @EnvironmentObject private var router: Router
-    @State private var animate = false
-    @State private var breatheState = false
-    @State private var isStart: Bool = false
     @StateObject private var calmviewModel: CalmViewModel
-    @State var isBreatheAnimation: Bool = false
-    @State var showPickerContact: Bool = false
-    @State var startJournal: Bool = false
-    @State private var text: String = ""
-    @FocusState private var isFocused : Bool
+    @EnvironmentObject private var router: Router
+    @State private var animate: Bool = false
+    @State private var coreOpacity: Double = 0.85
+    @StateObject private var breath = HaloBreathingController()
+    @State private var scale: CGFloat = 1.0
+    
     init(resultAction: GeminiActionModel) {
         _calmviewModel = StateObject(wrappedValue: CalmViewModel(resultAction: resultAction))
     }
     
+    private func jitter(_ base: Double, percent: Double = 0.08) -> Double {
+        let delta = base * percent
+        return base + Double.random(in: -delta...delta)
+    }
     
-    func TimerLine(
-        progress: Double,
-        color: Color
-    ) -> some View {
+    private func startBreathing() {
+        inhale()
+    }
 
-        GeometryReader { geo in
-            Capsule()
-                .fill(color)
-                .frame(
-                    width: geo.size.width * progress,
-                    height: 2
-                )
-                .opacity(0.45)
-                .animation(.easeInOut, value: progress)
+    private func inhale() {
+        let duration = jitter(AppInfo.shared.getDurationInHale)
+        let targetScale = jitter(0.96, percent: 0.06)
+        let targetOpacity = jitter(0.76, percent: 0.05)
+        
+        withAnimation(.easeInOut(duration: duration)) {
+            scale = targetScale
+            coreOpacity = targetOpacity
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
+            exhale()
         }
     }
-    
 
-    func bigHaloBreathing() -> some View {
-        ZStack {
-            Circle()
-                .fill(
-                    RadialGradient(
-                        gradient: Gradient(colors: [
-                            Color(hex: "DCEBFF").opacity(0.08),
-                            Color(hex: "DCEBFF").opacity(0.04),
-                            .clear
-                        ]),
-                        center: .init(x: 0.46, y: 0.44),
-                        startRadius: 50,
-                        endRadius: 170
-                    )
-                )
-                .blur(radius: 24)
-                .blendMode(.screen)
-            
-            Circle()
-                .fill(
-                    RadialGradient(
-                        gradient: Gradient(colors: [
-                            Color(hex: "E6F0FF").opacity(0.22),
-                            Color(hex: "E6F0FF").opacity(0.10),
-                            .clear
-                        ]),
-                        center: .init(x: 0.52, y: 0.48),
-                        startRadius: 0,
-                        endRadius: 95
-                    )
-                )
-                .blur(radius: 12)
-                .blendMode(.screen)
+    private func exhale() {
+        let duration = jitter(AppInfo.shared.getDurationExHale)
+        let targetScale = jitter(1.15, percent: 0.04)
+        let targetOpacity = jitter(0.88, percent: 0.04)
+        
+        withAnimation(.easeInOut(duration: duration)) {
+            scale = targetScale
+            coreOpacity = targetOpacity
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
+            inhale()
         }
     }
     
-    func makeCall(to phoneNumber: String) {
-        let formatted = phoneNumber.replacingOccurrences(of: " ", with: "")
-        if let url = URL(string: "tel://\(formatted)"),
-           UIApplication.shared.canOpenURL(url) {
-            UIApplication.shared.open(url)
-        }
-    }
+    
+    
     
     var body: some View {
         BaseView(viewModel: calmviewModel) { vm in
             ZStack {
-                GradientBackgroundView()
-                    .ignoresSafeArea()
-                    ZStack{
-                        bigHaloBreathing()
-                    }
-                    .scaleEffect(animate ? 1.8 : 1.0)
-                    .opacity(isBreatheAnimation ? 0 : (animate ? 1.0 : 0.97))
-                    .animation(
-                        .easeInOut(duration: 6.5)
-                            .repeatForever(autoreverses: true),
-                        value: animate
-                    )
-                    ZStack{
-                        HaloView(startAnimation: isBreatheAnimation)
-                            .animation(
-                            .easeInOut(duration: 6.5)
-                            .repeatForever(autoreverses: true),
-                            value: isBreatheAnimation
+                GeometryReader { geo in
+                    HaloDriftView {
+                        ZStack {
+                            HaloLightLayer(opacity: 0.35 * coreOpacity, blur: 60 + 15)
+                            HaloLightLayer(opacity: 0.6  * coreOpacity, blur: 60)
+                            HaloLightLayer(opacity: 1.0  * coreOpacity, blur: 60 - 10)
+                        }
+                        .frame(
+                            width: geo.size.width * 0.35,
+                            height: geo.size.width * 0.35
                         )
+                        .scaleEffect(scale)
                     }
-                    .opacity(isBreatheAnimation ? 1 : 0)
-                    .animation(.easeInOut(duration: 1.0), value: isBreatheAnimation)
-                
-                VStack{
+                    .position(
+                        x: geo.size.width / 2,
+                        y: geo.size.height / 2
+                    )
+                    
+                    .onAppear {
+                        startBreathing()
+                    }
+                }
+                ZStack{
+                    ParticleShimmerViewNew(
+                        animate: $animate,
+                        scale: $scale,
+                        countParticles: 35
+                    )
+                }
+                VStack(alignment: .center) {
                     Text("LUMIRAi")
                         .font(AppFonts.playFairDisplayReg(size: 24))
                         .foregroundColor(.white)
                         .padding(.top, 10)
-                    if startJournal{
-                        TextEditor(text: $text)
-                            .font(AppFonts.nunito(size: 20))
-                            .foregroundColor(.white)
-                            .scrollContentBackground(.hidden)
-                            .padding(30) // padding di dalam text editor
-                            .background(Color.clear) // transparan
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(Color.white, lineWidth: 1)
-                                    .padding(20)// border putih
-                            )
-                            .frame(minHeight: 200)
-                            .focused($isFocused)
-                    }else {
-                        Spacer()
-                    }
-                    
+                    Spacer()
                     Text(vm.resultAction.echo)
                         .font(AppFonts.nunito(size: 20))
                         .foregroundColor(.white)
                         .padding(.horizontal, 20)
-                        .frame(maxWidth: .infinity)
                         .multilineTextAlignment(.center)
-                        
-                    if isStart {
-                        TimerLine(
-                            progress: vm.progress,
-                            color: Color(hex: "C9D6E8")
-                        )
-                        .frame(height: 2)
-                    } else{
-                        GlassButtonView(title: "\(vm.resultAction.button)"){
-                            isStart.toggle()
-                            vm.startTimer()
-                            switch vm.action {
-                            case .breathe:
-                                isBreatheAnimation = true
-                            case .walk:
-                                AppLogger.shared.log("walk")
-                            case .journal:
-                                startJournal = true
-                                isFocused = true
-                            case .call:
-                                showPickerContact = true
-                            case .unknown:
-                                AppLogger.shared.log("unknown")
-                            }
-                        }.padding(.horizontal, 10)
-                    }
                 }
-                .animation(nil, value: breatheState)
             }
-            .navigationBarBackButtonHidden(true)
+            .background(Color(hex:"#0A0F16"))
+            .navigationBarBackButtonHidden()
             .onAppear {
-                animate = true
-            }
-            .sheet(isPresented: $showPickerContact) {
-                ContactPickerView { number in
-                    makeCall(to: number)
+                vm.onFinished = {
+                    router.pop()
                 }
-            }
-            .onTapGesture {
-                UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-                isFocused = false
             }
         }
     }
+    
     
 }
 
