@@ -17,6 +17,8 @@ struct CalmView: View{
     @State private var coreOpacity: Double = 0.85
     @StateObject private var breath = HaloBreathingController()
     @State private var scale: CGFloat = 1.0
+    @State private var echoSnapshot: String = ""
+    @State private var didFreezeEcho = false
     
     init(resultAction: GeminiActionModel) {
         _calmviewModel = StateObject(wrappedValue: CalmViewModel(resultAction: resultAction))
@@ -102,11 +104,14 @@ struct CalmView: View{
                         .foregroundColor(.white)
                         .padding(.top, 10)
                     Spacer()
-                    Text(vm.resultAction.echo)
+                    Text(vm.currentSentence)
                         .font(AppFonts.nunito(size: 20))
                         .foregroundColor(.white)
                         .padding(.horizontal, 20)
                         .multilineTextAlignment(.center)
+                        .id(vm.currentSentence)
+                        .transition(.opacity)
+                        .animation(.easeInOut(duration: 3), value: vm.currentSentence)
                 }
             }
             .background(Color(hex:"#0A0F16"))
@@ -116,16 +121,24 @@ struct CalmView: View{
                     router.pop()
                 }
             }
+            .gesture(
+                DragGesture().onEnded { value in
+                    if value.translation.width > 100 {
+                        router.pop()
+                    }
+                }
+            )
         }
     }
     
     
 }
 
+
 #Preview {
     CalmView(resultAction: GeminiActionModel(
         emotion: "anxiety",
-        echo: "I realize things feel overwhelming right now, but we can take this one step at a time to find your center again.",
+        echo: "I realize.|test kalimat.|kalimatnya tersebut",
         action: "journal",
         durationSec: 300,
         button: "Start Breathing"

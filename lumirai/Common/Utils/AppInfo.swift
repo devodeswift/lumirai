@@ -51,4 +51,18 @@ class AppInfo {
         }
         
     }
+    
+    var isUsageUpdatedToday: Bool {
+        guard let lastDate = AppUserDefaults.shared.lastUsageUpdateDate else { return false }
+        AppLogger.shared.log("lastUsageUpdateDate: \(lastDate)")
+        return Calendar.current.isDateInToday(lastDate)
+    }
+    
+    func updateUsageCountIfNeeded() {
+        guard !isUsageUpdatedToday else { return }
+
+        AppUserDefaults.shared.usageCountPerDay += 1
+        AppUserDefaults.shared.lastUsageUpdateDate = Date()
+    }
+
 }

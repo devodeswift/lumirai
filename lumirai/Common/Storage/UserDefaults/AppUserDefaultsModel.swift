@@ -13,5 +13,7 @@ enum KeysAppUserDefaults {
     static let heartRate = "heart_rate"
     static let breathingRate = "breathing_rate"
     static let lastUserText = "last_user_text"
+    static let usageCountPerDay = "usage_count_per_day"
+    static let lastUsageUpdateDate = "last_usage_update_date"
     
 }

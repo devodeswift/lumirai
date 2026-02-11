@@ -30,36 +30,88 @@ class ExpressionViewModel: BaseViewModel {
     
     func getResponse(text: String) {
         getResponse = true
-        let getText = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        let lengthChar = getText.count
         
-        
-//        if lengthChar < 20 {
-//            let fileJsonPresence = JSON(TestDummyData.shared.getDummyJSON(fileName: "template-presence"))
-//            let dataTemplatesPresence = templatesModel(fileJsonPresence)
-//            if let resultPresence = dataTemplatesPresence.dataTemplates.randomElement() {
-//                AppLogger.shared.log("result Presence: \(resultPresence)")
-//                textResponse = resultPresence
-//            }
-//            
-//        }
-        
-        if lengthChar > 80 {
-            let fileJsonGrounding = JSON(TestDummyData.shared.getDummyJSON(fileName: "template-grounding"))
-            let dataTemplatesGrounding = templatesModel(fileJsonGrounding)
-            if let resultGrounding = dataTemplatesGrounding.dataTemplates.randomElement() {
-                AppLogger.shared.log("result Grounding: \(resultGrounding)")
-                textResponse = resultGrounding
+        AppInfo.shared.updateUsageCountIfNeeded()
+        let tempalteMemoryCallbackFile = JSON(TestDummyData.shared.getDummyJSON(fileName: "template-memory-callback"))
+        let dataTemplateMemoryCallback = templatesMemoryCallbackModel(tempalteMemoryCallbackFile)
+        if AppUserDefaults.shared.usageCountPerDay <= 30 && AppUserDefaults.shared.usageCountPerDay > 0 {
+            if let result30Days = dataTemplateMemoryCallback.dataTemplates30Days.randomElement() {
+                textResponse = result30Days
             }
-            
-        } else {
-            let fileJsonPresence = JSON(TestDummyData.shared.getDummyJSON(fileName: "template-presence"))
-            let dataTemplatesPresence = templatesModel(fileJsonPresence)
-            if let resultPresence = dataTemplatesPresence.dataTemplates.randomElement() {
-                AppLogger.shared.log("result Presence: \(resultPresence)")
-                textResponse = resultPresence
+        } else if AppUserDefaults.shared.usageCountPerDay > 30 && AppUserDefaults.shared.usageCountPerDay <= 90 {
+            if let result90Days = dataTemplateMemoryCallback.dataTemplates90Days.randomElement() {
+                textResponse = result90Days
+            }
+        } else if AppUserDefaults.shared.usageCountPerDay > 90 {
+            if let result120Days = dataTemplateMemoryCallback.dataTemplates120Days.randomElement() {
+                textResponse = result120Days
             }
         }
+        
+        let hour = Calendar.current.component(.hour, from: Date())
+        switch hour {
+        case 5..<12:
+            let templateMorningFile = JSON(TestDummyData.shared.getDummyJSON(fileName: "template-morning"))
+            let dataTemplateMorning = templatesModel(templateMorningFile)
+            if let resultMorning = dataTemplateMorning.dataTemplates.randomElement() {
+                textResponse += "|" + resultMorning
+            }
+            
+        case 12..<17:
+            let templateAfternoonFile = JSON(TestDummyData.shared.getDummyJSON(fileName: "template-afternoon"))
+            let dataTemplateAfternoon = templatesModel(templateAfternoonFile)
+            if let resultAfternoon = dataTemplateAfternoon.dataTemplates.randomElement() {
+                textResponse += "|" + resultAfternoon
+            }
+            
+        case 17..<21:
+            let templateEveningFile = JSON(TestDummyData.shared.getDummyJSON(fileName: "template-evening"))
+            let dataTemplateEvening = templatesModel(templateEveningFile)
+            if let resultEvening = dataTemplateEvening.dataTemplates.randomElement() {
+                textResponse += "|" + resultEvening
+            }
+        default:
+            let templateNightFile = JSON(TestDummyData.shared.getDummyJSON(fileName: "template-night"))
+            let dataTemplateNight = templatesModel(templateNightFile)
+            if let resultNight = dataTemplateNight.dataTemplates.randomElement() {
+                textResponse += "|" + resultNight
+            }
+        }
+        
+        let emotionModeFromText = self.detectEmotion(text: text)
+        let emotionFromWatch = self.detectEmotionFromWatch()
+        var resultEmotion : EmotionMode = .none
+        
+        if emotionModeFromText != emotionFromWatch {
+            resultEmotion = emotionModeFromText
+        } else {
+            resultEmotion = emotionFromWatch
+        }
+        
+        switch resultEmotion {
+        case .stress:
+            let templateStressFile = JSON(TestDummyData.shared.getDummyJSON(fileName: "template-stress"))
+            let dataTemplateStress = templatesModel(templateStressFile)
+            if let resultStress = dataTemplateStress.dataTemplates.randomElement() {
+                textResponse += "|" + resultStress
+            }
+        case .fatigue:
+            let templateFatigueFile = JSON(TestDummyData.shared.getDummyJSON(fileName: "template-fatigue"))
+            let dataTemplateFatigue = templatesModel(templateFatigueFile)
+            if let resultFatigue = dataTemplateFatigue.dataTemplates.randomElement() {
+                textResponse += "|" + resultFatigue
+            }
+        case .existential:
+            let templateExistentialFile = JSON(TestDummyData.shared.getDummyJSON(fileName: "template-existential"))
+            let dataTemplateExistential = templatesModel(templateExistentialFile)
+            if let resultExistential = dataTemplateExistential.dataTemplates.randomElement() {
+                textResponse += "|" + resultExistential
+            }
+        case .none:
+            AppLogger.shared.log("no emotion")
+        }
+        
+        
         
         var dataGeminiAction = GeminiActionModel()
         dataGeminiAction.action = "test"
@@ -135,6 +187,43 @@ class ExpressionViewModel: BaseViewModel {
         AppLogger.shared.log("heartRate : \(heartRate)")
         AppLogger.shared.log("breathingRate : \(breathingRate)")
         AppLogger.shared.log("emotion : \(emotion)")
+    }
+    
+    func containsKeyword(in text: String, keywords: [String]) -> Bool {
+        let lower = text.lowercased()
+        return keywords.contains { lower.contains($0) }
+    }
+    
+    func detectEmotion(text: String) -> EmotionMode {
+        let stressKeywords = ["stress","stressed","anxious","anxiety","panic","worried","worry","overwhelmed","tense","nervous","pressure"]
+        let fatigueKeywords = ["tired","exhausted","sleep","sleepy","drained","weary","rest","heavy","fatigue"]
+        let existentialKeywords = ["why","meaning","purpose","point","lost","don't know","unclear","confused","empty"]
+        
+        if containsKeyword(in: text, keywords: stressKeywords) { return .stress}
+        if containsKeyword(in: text, keywords: fatigueKeywords) { return .fatigue}
+        if containsKeyword(in: text, keywords: existentialKeywords) { return .existential }
+        
+        return .none
+    }
+    
+    func detectEmotionFromWatch() -> EmotionMode {
+        let baselineHR = 70.0
+        let baselineHRV = 30.0
+        
+        let highHR = AppUserDefaults.shared.hearRate > baselineHR + 10      // > 80
+        let lowHR = AppUserDefaults.shared.hearRate < baselineHR - 8        // < 62
+        let lowHRV = AppUserDefaults.shared.hrv < baselineHRV - 10    // < 20
+        
+        // STRESS
+        if highHR && lowHRV {
+            return .stress
+        }
+        
+        // FATIGUE
+        if lowHR && lowHRV {
+            return .fatigue
+        }
+        return .none
     }
     
 }

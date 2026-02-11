@@ -49,6 +49,24 @@ class AppUserDefaults {
         }
     }
     
+    var usageCountPerDay: Int {
+        get {
+            defaults.integer(forKey: KeysAppUserDefaults.usageCountPerDay)
+        }
+        set {
+            defaults.set(newValue, forKey: KeysAppUserDefaults.usageCountPerDay)
+        }
+    }
+    
+    var lastUsageUpdateDate: Date? {
+        get {
+            return defaults.object(forKey: KeysAppUserDefaults.lastUsageUpdateDate) as? Date
+        }
+        set {
+            defaults.set(newValue, forKey: KeysAppUserDefaults.lastUsageUpdateDate)
+        }
+    }
+    
     var lastUserTexts: [LastUserText] {
         get {
             guard

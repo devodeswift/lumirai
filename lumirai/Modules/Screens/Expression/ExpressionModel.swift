@@ -114,3 +114,24 @@ struct templatesModel {
     }
 }
 
+struct templatesMemoryCallbackModel {
+    var dataTemplates30Days: [String] = []
+    var dataTemplates90Days: [String] = []
+    var dataTemplates120Days: [String] = []
+    
+    init() {}
+
+    init(_ json: JSON) {
+        dataTemplates30Days = json["30_days"].arrayValue.map { $0.stringValue }
+        dataTemplates90Days = json["90_days"].arrayValue.map { $0.stringValue }
+        dataTemplates120Days = json["120_days"].arrayValue.map { $0.stringValue }
+    }
+}
+
+enum EmotionMode {
+    case stress
+    case fatigue
+    case existential
+    case none
+}
+
