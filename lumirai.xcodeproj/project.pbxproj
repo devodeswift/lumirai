@@ -320,20 +320,20 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = DRZP598BNA;
+				DEVELOPMENT_TEAM = FK36DMZ82D;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "lumirai-watch-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "lumirai-watch";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "This app reads your HRV to provide personalized calming experience.";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.lumirai.ios;
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.lumirai.ios.os;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.lumirai.ios.watchkitapp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lumirai.ios.os.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = watchos;
@@ -358,20 +358,20 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = DRZP598BNA;
+				DEVELOPMENT_TEAM = FK36DMZ82D;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "lumirai-watch-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "lumirai-watch";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "This app reads your HRV to provide personalized calming experience.";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.lumirai.ios;
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.lumirai.ios.os;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.lumirai.ios.watchkitapp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lumirai.ios.os.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = watchos;
@@ -517,12 +517,14 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = DRZP598BNA;
+				DEVELOPMENT_TEAM = FK36DMZ82D;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = lumirai/Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = LUMIRAi;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This app uses the microphone to visualize your voice and respond emotionally.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "This app needs access to convert your voice to text.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -534,7 +536,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.lumirai.ios;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lumirai.ios.os;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -560,12 +562,14 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = DRZP598BNA;
+				DEVELOPMENT_TEAM = FK36DMZ82D;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = lumirai/Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = LUMIRAi;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This app uses the microphone to visualize your voice and respond emotionally.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "This app needs access to convert your voice to text.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -577,7 +581,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.lumirai.ios;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lumirai.ios.os;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
