@@ -69,19 +69,23 @@ class CalmViewModel: BaseViewModel {
     
     func startSentenceLoop(interval: Double = 6) {
         sentenceTimer?.invalidate()
-        
+
         sentenceTimer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in
             guard let self else { return }
             guard !self.sentences.isEmpty else { return }
-            
-            // Jika sudah terakhir → stop timer
+
             if self.sentenceIndex >= self.sentences.count - 1 {
                 self.stopSentenceLoop()
                 return
             }
-            
+
             self.sentenceIndex += 1
-            self.currentSentence = self.sentences[self.sentenceIndex]
+
+            DispatchQueue.main.async {
+                withAnimation(.easeInOut(duration: 1.5)) {
+                    self.currentSentence = self.sentences[self.sentenceIndex]
+                }
+            }
         }
     }
     

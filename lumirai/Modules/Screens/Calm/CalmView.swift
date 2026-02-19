@@ -19,6 +19,8 @@ struct CalmView: View{
     @State private var scale: CGFloat = 1.0
     @State private var echoSnapshot: String = ""
     @State private var didFreezeEcho = false
+    @State private var displayedText = ""
+    @State private var opacity = 1.0
     
     init(resultAction: GeminiActionModel) {
         _calmviewModel = StateObject(wrappedValue: CalmViewModel(resultAction: resultAction))
@@ -109,9 +111,9 @@ struct CalmView: View{
                         .foregroundColor(.white)
                         .padding(.horizontal, 20)
                         .multilineTextAlignment(.center)
-                        .id(vm.currentSentence)
+                        .id(vm.currentSentence) // 🔥 force new view
                         .transition(.opacity)
-                        .animation(.easeInOut(duration: 3), value: vm.currentSentence)
+                        .animation(.easeInOut(duration: 1.5), value: vm.currentSentence)
                 }
             }
             .background(Color(hex:"#0A0F16"))
