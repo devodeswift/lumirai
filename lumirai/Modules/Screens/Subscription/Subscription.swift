@@ -111,48 +111,56 @@ struct Subscription: View {
                         
                         
                         
-                        VStack{
-                            CustomRadioButton(title: "Yearly — €99 first year\nThen €129/year\n7-day free trial", isSelected: selectedPlan == "Yearly") {
+                        VStack(spacing: 16) {
+                            
+                            CustomRadioButton(
+                                title: "Yearly — €99 first year\nThen €129/year\n7-day free trial",
+                                isSelected: selectedPlan == "Yearly"
+                            ) {
                                 selectedPlan = "Yearly"
                             }
-                            
-                            CustomRadioButton(title: "Monthly — €14.99/month\n7-day free trial", isSelected: selectedPlan == "Monthly") {
+
+                            CustomRadioButton(
+                                title: "Monthly — €14.99/month\n7-day free trial",
+                                isSelected: selectedPlan == "Monthly"
+                            ) {
                                 selectedPlan = "Monthly"
                             }
-                            
-                            
-                            Button(action: {
+
+                            // CTA Button (already refined)
+                            GlassButtonView(
+                                title: "Start Free Trial",
+                                textColor: .black,
+                                backgroundStyle: .solid(.white)
+                            ){
                                 router.push(.expression)
-                            }) {
-                                Text(vm.textTrial)
-                                    .font(AppFonts.playFairDisplayReg(size: 16))
-                                    .foregroundColor(.black)
-                                    .padding(.horizontal, 20)
                             }
-                            .frame(height: 50)
-                            .frame(maxWidth: .infinity)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 16)
-                                    .stroke(Color(hex: "#2A2A2A"), lineWidth: 1)
-                            )
-                            .background(
-                                RoundedRectangle(cornerRadius: 16)
-                                    .fill(.white)
-                            )
-                            
                         }
                         .padding(.vertical, 24)
                         .padding(.horizontal, 20)
                         .frame(maxWidth: 400)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 16)
-                                .stroke(Color(hex: "#2A2A2A"), lineWidth: 1)
-                        )
+
+                        // 🌫 Glass background
                         .background(
-                            RoundedRectangle(cornerRadius: 16)
-                                .fill(Color(hex: "#1A1A1A"))
-                                .opacity(0.1)
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 20)
+                                    .fill(Color.black.opacity(0.12))
+                                    .blur(radius: 12)
+
+                                BlurView(style: .systemUltraThinMaterialDark)
+                                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                            }
                         )
+
+                        // Subtle border glass
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 20)
+                                .stroke(Color.white.opacity(0.12), lineWidth: 1)
+                        )
+
+                        // Depth shadow
+                        .shadow(color: .black.opacity(0.25), radius: 20, x: 0, y: 10)
+                        .shadow(color: .white.opacity(0.06), radius: 2, x: 0, y: 0)
                         Spacer()
                         
                         Text(vm.textDescription)
@@ -203,33 +211,61 @@ struct BottomTriangleShape: Shape {
 
 
 struct CustomRadioButton: View {
-    let title: String
-    let isSelected: Bool
-    let action: () -> Void
+    var title: String
+    var isSelected: Bool
+    var action: () -> Void
     
+    @State private var pulse = false
+
     var body: some View {
-        Button(action: action) {
-            HStack(alignment:.top, spacing: 20) {
-                ZStack {
-                    Circle()
-                        .stroke(isSelected ? Color.blue : Color.gray, lineWidth: 2)
-                        .frame(width: 20, height: 20)
-                        
-                    
-                    if isSelected {
+        Button(action: {
+            action()
+            triggerPulse()
+        }) {
+            HStack(spacing: 12) {
+                // Radio circle
+                Circle()
+                    .stroke(isSelected ? Color.blue.opacity(0.6) : Color.gray , lineWidth: 1)
+                    .background(
                         Circle()
-                            .fill(Color.blue)
-                            .frame(width: 12, height: 12)
-                    }
-                }
-                .padding(.top, 10)
+                            .fill(isSelected ? Color.blue : .clear)
+                            .padding(4)
+                    )
+                    .frame(width: 22, height: 22)
+
                 Text(title)
-                    .font(AppFonts.playFairDisplayReg(size: 24))
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .font(AppFonts.playFairDisplayReg(size: 16))
+                    .foregroundColor(.white.opacity(0.9))
+                    .multilineTextAlignment(.leading)
+
+                Spacer()
             }
-            .contentShape(Rectangle())
+            .padding(16)
+            .frame(maxWidth: .infinity)
         }
-        .buttonStyle(PlainButtonStyle())
+        .background(
+            RoundedRectangle(cornerRadius: 14)
+                .fill(Color.white.opacity(0.03))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 14)
+                .stroke(Color.blue.opacity(isSelected ? 0.35 : 0.08), lineWidth: 1)
+        )
+
+        .overlay(
+            RoundedRectangle(cornerRadius: 14)
+                .stroke(Color.blue.opacity(pulse ? 0.3 : 0), lineWidth: 2)
+                .blur(radius: 14)
+                .scaleEffect(pulse ? 1.06 : 1.0)
+                .opacity(pulse ? 1 : 0)
+        )
+        .animation(.easeOut(duration: 0.22), value: pulse)
+    }
+
+    private func triggerPulse() {
+        pulse = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+            pulse = false
+        }
     }
 }
