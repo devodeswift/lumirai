@@ -12,13 +12,13 @@ struct GlassButtonView: View {
     var title: String = ""
     var action: () -> Void
 
-    private let aqua = Color("#EAF6F5")
     private let cornerRadius: CGFloat = 14
-    private let borderWidth: CGFloat = 1
+    
+    @State private var isPressed = false
 
     // Haptic
     private func performHaptic() {
-        let generator = UIImpactFeedbackGenerator(style: .medium)
+        let generator = UIImpactFeedbackGenerator(style: .light)
         generator.prepare()
         generator.impactOccurred()
     }
@@ -33,36 +33,60 @@ struct GlassButtonView: View {
                 .foregroundColor(Color("#EAF6F5"))
                 .padding(.vertical, 14)
                 .padding(.horizontal, 26)
+                .frame(maxWidth: .infinity)
         }
-        .frame(maxWidth: .infinity)
         .background(
             ZStack {
-                Color.black.opacity(0.18)
-                    .blur(radius: 8)
-                    .cornerRadius(cornerRadius)
-                // Blur layer
+                // Depth layer
+                RoundedRectangle(cornerRadius: cornerRadius)
+                    .fill(Color.black.opacity(0.22))
+                    .blur(radius: 10)
+                
+                // Glass material
                 BlurView(style: .systemUltraThinMaterialDark)
                     .cornerRadius(cornerRadius)
-                    .opacity(1.0)
             }
         )
         .overlay(
             ZStack {
+                // Border glass
                 RoundedRectangle(cornerRadius: cornerRadius)
-                    .stroke(Color.white.opacity(0.20), lineWidth: 0.7)
-                            
+                    .stroke(Color.white.opacity(0.18), lineWidth: 0.8)
+                
+                // Inner subtle highlight
                 RoundedRectangle(cornerRadius: cornerRadius)
-                    .stroke(Color.white.opacity(0.12), lineWidth: 1)
-                    .blur(radius: 1.6)
-                    .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
-                    .opacity(0.6)
+                    .stroke(Color.white.opacity(0.10), lineWidth: 1)
+                    .blur(radius: 1.5)
             }
         )
+        // Micro glow on press
+        .overlay(
+            RoundedRectangle(cornerRadius: cornerRadius)
+                .fill(Color.white.opacity(isPressed ? 0.12 : 0))
+                .blur(radius: 12)
+                .animation(.easeOut(duration: 0.15), value: isPressed)
+        )
         .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
-        .shadow(color: Color.white.opacity(0.13), radius: 2, x: 0, y: 0)
-        .compositingGroup()
-        .padding(8)
         
+        // Subtle depth shadow
+        .shadow(color: Color.black.opacity(0.25), radius: 10, x: 0, y: 6)
+        .shadow(color: Color.white.opacity(0.12), radius: 1, x: 0, y: 0)
+        
+        // Gesture tracking for tactile feel
+        .scaleEffect(isPressed ? 0.985 : 1.0)
+        .animation(.easeOut(duration: 0.15), value: isPressed)
+        .gesture(
+            DragGesture(minimumDistance: 0)
+                .onChanged { _ in
+                    if !isPressed { isPressed = true }
+                }
+                .onEnded { _ in
+                    withAnimation(.easeOut(duration: 0.30)) {
+                        isPressed = false
+                    }
+                }
+        )
+        .padding(8)
     }
 }
 
