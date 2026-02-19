@@ -101,10 +101,25 @@ struct CalmView: View{
                     )
                 }
                 VStack(alignment: .center) {
-                    Text("LUMIRAi")
-                        .font(AppFonts.playFairDisplayReg(size: 24))
-                        .foregroundColor(.white)
-                        .padding(.top, 10)
+                    ZStack {
+                        HStack(spacing: 16) {
+                            GlassButtonImageView(image: Image(systemName: "chevron.left")) {
+                                router.pop()
+                                vm.stopTimer()
+                            }
+                            .frame(width: 60)
+
+                            Spacer()
+                        }
+
+                        Text("LUMIRAi")
+                            .font(AppFonts.playFairDisplayReg(size: 24))
+                            .foregroundColor(.white)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 60)
+                    .padding(.horizontal, 16)
+                    
                     Spacer()
                     Text(vm.currentSentence)
                         .font(AppFonts.nunito(size: 20))
@@ -121,12 +136,14 @@ struct CalmView: View{
             .onAppear {
                 vm.onFinished = {
                     router.pop()
+                    vm.stopTimer()
                 }
             }
             .gesture(
                 DragGesture().onEnded { value in
                     if value.translation.width > 100 {
                         router.pop()
+                        vm.stopTimer()
                     }
                 }
             )
