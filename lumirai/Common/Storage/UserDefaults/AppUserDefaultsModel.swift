@@ -15,5 +15,9 @@ enum KeysAppUserDefaults {
     static let lastUserText = "last_user_text"
     static let usageCountPerDay = "usage_count_per_day"
     static let lastUsageUpdateDate = "last_usage_update_date"
+    static let textResultCountPerday = "text_result_count_per_day"
+    static let textResultHour = "text_result_hour"
+    static let textResultEmotion = "text_result_emotion"
+    
     
 }

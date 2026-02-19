@@ -34,47 +34,66 @@ class ExpressionViewModel: BaseViewModel {
         AppInfo.shared.updateUsageCountIfNeeded()
         let tempalteMemoryCallbackFile = JSON(TestDummyData.shared.getDummyJSON(fileName: "template-memory-callback"))
         let dataTemplateMemoryCallback = templatesMemoryCallbackModel(tempalteMemoryCallbackFile)
+        let latesTextResultCountPerday = AppUserDefaults.shared.textResultCountPerDay
         if AppUserDefaults.shared.usageCountPerDay <= 30 && AppUserDefaults.shared.usageCountPerDay > 0 {
-            if let result30Days = dataTemplateMemoryCallback.dataTemplates30Days.randomElement() {
+            let availableTextResultCountPerday = dataTemplateMemoryCallback.dataTemplates30Days
+                .filter { $0 != latesTextResultCountPerday }
+            if let result30Days = availableTextResultCountPerday.randomElement() {
                 textResponse = result30Days
+                AppUserDefaults.shared.textResultCountPerDay = result30Days
             }
         } else if AppUserDefaults.shared.usageCountPerDay > 30 && AppUserDefaults.shared.usageCountPerDay <= 90 {
-            if let result90Days = dataTemplateMemoryCallback.dataTemplates90Days.randomElement() {
+            let availableTextResultCountPerday = dataTemplateMemoryCallback.dataTemplates90Days
+                .filter { $0 != latesTextResultCountPerday }
+            if let result90Days = availableTextResultCountPerday.randomElement() {
                 textResponse = result90Days
+                AppUserDefaults.shared.textResultCountPerDay = result90Days
             }
         } else if AppUserDefaults.shared.usageCountPerDay > 90 {
-            if let result120Days = dataTemplateMemoryCallback.dataTemplates120Days.randomElement() {
+            let availableTextResultCountPerday = dataTemplateMemoryCallback.dataTemplates120Days
+                .filter { $0 != latesTextResultCountPerday }
+            if let result120Days = availableTextResultCountPerday.randomElement() {
                 textResponse = result120Days
+                AppUserDefaults.shared.textResultCountPerDay = result120Days
             }
         }
         
         let hour = Calendar.current.component(.hour, from: Date())
+        let latesTextResultHour = AppUserDefaults.shared.textResultHour
         switch hour {
         case 5..<12:
             let templateMorningFile = JSON(TestDummyData.shared.getDummyJSON(fileName: "template-morning"))
             let dataTemplateMorning = templatesModel(templateMorningFile)
-            if let resultMorning = dataTemplateMorning.dataTemplates.randomElement() {
+            let availableTextResultMorningHours = dataTemplateMorning.dataTemplates.filter { $0 != latesTextResultHour }
+            if let resultMorning = availableTextResultMorningHours.randomElement() {
                 textResponse += "|" + resultMorning
+                AppUserDefaults.shared.textResultHour = resultMorning
             }
             
         case 12..<17:
             let templateAfternoonFile = JSON(TestDummyData.shared.getDummyJSON(fileName: "template-afternoon"))
             let dataTemplateAfternoon = templatesModel(templateAfternoonFile)
-            if let resultAfternoon = dataTemplateAfternoon.dataTemplates.randomElement() {
+            let availableTextResultAfternoonHours = dataTemplateAfternoon.dataTemplates.filter { $0 != latesTextResultHour }
+            if let resultAfternoon = availableTextResultAfternoonHours.randomElement() {
                 textResponse += "|" + resultAfternoon
+                AppUserDefaults.shared.textResultHour = resultAfternoon
             }
             
         case 17..<21:
             let templateEveningFile = JSON(TestDummyData.shared.getDummyJSON(fileName: "template-evening"))
             let dataTemplateEvening = templatesModel(templateEveningFile)
-            if let resultEvening = dataTemplateEvening.dataTemplates.randomElement() {
+            let availableTextResultEveningHours = dataTemplateEvening.dataTemplates.filter { $0 != latesTextResultHour }
+            if let resultEvening = availableTextResultEveningHours.randomElement() {
                 textResponse += "|" + resultEvening
+                AppUserDefaults.shared.textResultHour = resultEvening
             }
         default:
             let templateNightFile = JSON(TestDummyData.shared.getDummyJSON(fileName: "template-night"))
             let dataTemplateNight = templatesModel(templateNightFile)
-            if let resultNight = dataTemplateNight.dataTemplates.randomElement() {
+            let availableTextResultNightHours = dataTemplateNight.dataTemplates.filter { $0 != latesTextResultHour }
+            if let resultNight = availableTextResultNightHours.randomElement() {
                 textResponse += "|" + resultNight
+                AppUserDefaults.shared.textResultHour = resultNight
             }
         }
         
@@ -87,25 +106,31 @@ class ExpressionViewModel: BaseViewModel {
         } else {
             resultEmotion = emotionFromWatch
         }
-        
+        let latesTextResultEmotion = AppUserDefaults.shared.textResultEmotion
         switch resultEmotion {
         case .stress:
             let templateStressFile = JSON(TestDummyData.shared.getDummyJSON(fileName: "template-stress"))
             let dataTemplateStress = templatesModel(templateStressFile)
-            if let resultStress = dataTemplateStress.dataTemplates.randomElement() {
+            let availableTextResultStressEmotion = dataTemplateStress.dataTemplates.filter { $0 != latesTextResultEmotion }
+            if let resultStress = availableTextResultStressEmotion.randomElement() {
                 textResponse += "|" + resultStress
+                AppUserDefaults.shared.textResultEmotion = resultStress
             }
         case .fatigue:
             let templateFatigueFile = JSON(TestDummyData.shared.getDummyJSON(fileName: "template-fatigue"))
             let dataTemplateFatigue = templatesModel(templateFatigueFile)
-            if let resultFatigue = dataTemplateFatigue.dataTemplates.randomElement() {
+            let availableTextResultFatigueEmotion = dataTemplateFatigue.dataTemplates.filter { $0 != latesTextResultEmotion }
+            if let resultFatigue = availableTextResultFatigueEmotion.randomElement() {
                 textResponse += "|" + resultFatigue
+                AppUserDefaults.shared.textResultEmotion = resultFatigue
             }
         case .existential:
             let templateExistentialFile = JSON(TestDummyData.shared.getDummyJSON(fileName: "template-existential"))
             let dataTemplateExistential = templatesModel(templateExistentialFile)
-            if let resultExistential = dataTemplateExistential.dataTemplates.randomElement() {
+            let availableTextResultExistentialEmotion = dataTemplateExistential.dataTemplates.filter { $0 != latesTextResultEmotion }
+            if let resultExistential = availableTextResultExistentialEmotion.randomElement() {
                 textResponse += "|" + resultExistential
+                AppUserDefaults.shared.textResultEmotion = resultExistential
             }
         case .none:
             AppLogger.shared.log("no emotion")

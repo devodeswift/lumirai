@@ -109,5 +109,30 @@ class AppUserDefaults {
         lastUserTexts = current
     }
     
+    var textResultCountPerDay: String {
+        get {
+            defaults.string(forKey: KeysAppUserDefaults.textResultCountPerday) ?? ""
+        }
+        set {
+            defaults.set(newValue, forKey: KeysAppUserDefaults.textResultCountPerday)
+        }
+    }
+    
+    var textResultHour: String {
+        get {
+            defaults.string(forKey: KeysAppUserDefaults.textResultHour) ?? ""
+        }
+        set {
+            defaults.set(newValue, forKey: KeysAppUserDefaults.textResultHour)
+        }
+    }
+    var textResultEmotion: String {
+        get {
+            defaults.string(forKey: KeysAppUserDefaults.textResultEmotion) ?? ""
+        }
+        set {
+            defaults.set(newValue, forKey: KeysAppUserDefaults.textResultEmotion)
+        }
+    }
     
 }
