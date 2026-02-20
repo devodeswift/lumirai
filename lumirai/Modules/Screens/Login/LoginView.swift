@@ -16,100 +16,50 @@ struct LoginView: View {
     var body: some View {
         BaseView(viewModel: viewModel) { vm in
             ZStack {
-                GradientBackgroundView()
-                    .ignoresSafeArea()
-                Color.clear
-                    .safeAreaInset(edge: .top) {
-                        HeaderView{
-                            router.pop()
-                        }
-                        .padding(.top, 16)
-                    }
-                VStack(spacing:20){
+                VStack{
+                    Text("Welcome to LUMIRAi")
+                        .font(AppFonts.playFairDisplayReg(size: 24))
+                        .foregroundColor(.white)
+                        .padding(.top, 10)
+                        .frame(maxWidth: .infinity)
+                        .multilineTextAlignment(.center)
                     Spacer()
-                    (
-                        Text(vm.textDescLogin1)
-                            .font(AppFonts.nunito(size: 18))
-                            .foregroundColor(.white.opacity(0.8))
-                        +
-                        Text(vm.textDescLogin2)
-                            .font(AppFonts.playFairDisplayReg(size: 18))
-                            .foregroundColor(.white) // premium accent
-                        +
-                        Text(vm.textDescLogin3)
-                            .font(AppFonts.nunito(size: 18))
-                            .foregroundColor(.white.opacity(0.8))
-                    )
-                    Button(action : {
-                        // with apple
+                    GlassButtonView(
+                        title: "Login With Apple",
+                        textColor: .black,
+                        backgroundStyle: .solid(.white)
+                    ){
                         vm.loginApple()
-                    })
-                    {
-                        HStack{
-                            Image(systemName: "applelogo")
-                                .font(.system(size: 24, weight: .medium))
-                                .foregroundColor(.white.opacity(0.8))
-                                .padding(8)
-                            Text(vm.textDescLoginApple)
-                                .font(AppFonts.nunito(size: 18))
-                                .foregroundColor(.white.opacity(0.8))
-                        }
                     }
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 50)
-                    .background(
-                        Color.black.opacity(0.18)
-                            .blur(radius: 8)
-                            .cornerRadius(.infinity)
-                    )
-                    .clipShape(Capsule())
-                    .overlay(
-                        Capsule()
-                            .stroke(
-                                Color.white.opacity(0.25), // stroke color
-                                lineWidth: 1
-                            )
-                    )
-                    .padding(.top, 16)
-                    
-                    Button(action : {
+                    GlassButtonView(
+                        title: "Login With Google"
+                    ){
                         vm.loginGoogle()
-                    })
-                    {
-                        HStack{
-                            Image(systemName: "g.circle.fill")
-                                .font(.system(size: 24, weight: .medium))
-                                .foregroundColor(.white.opacity(0.8))
-                                .padding(8)
-                            Text(vm.textDescLoginGoogle)
-                                .font(AppFonts.nunito(size: 18))
-                                .foregroundColor(.white.opacity(0.8))
-                        }
                     }
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 50)
-                    .background(
-                        Color.black.opacity(0.18)
-                            .blur(radius: 8)
-                            .cornerRadius(.infinity)
-                    )
-                    .clipShape(Capsule())
-                    .overlay(
-                        Capsule()
-                            .stroke(
-                                Color.white.opacity(0.25), // stroke color
-                                lineWidth: 1
-                            )
-                    )
+                    Text("Your 7-day trial begins after sign-in")
+                        .font(AppFonts.nunito(size: 16))
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .multilineTextAlignment(.center)
+                    Text("Restore Purchase")
+                        .font(AppFonts.nunito(size: 14))
+                        .foregroundColor(.white)
+                        .padding(.top, 10)
+                        .frame(maxWidth: .infinity)
+                        .multilineTextAlignment(.center)
+                    
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .padding(.horizontal, 16)
             }
-            .navigationBarBackButtonHidden(true)
-            .onChange(of : vm.isSuccsessLogin) { isSuccess in
+            .padding(.horizontal, 16)
+            .padding(.bottom, 16)
+            .frame(maxWidth:.infinity, maxHeight: .infinity)
+            .background(Color(hex:"#0A0F16"))
+            .navigationBarBackButtonHidden()
+            .onChange(of: vm.isSuccsessLogin){ isSuccess in
                 if isSuccess {
                     router.push(.expression)
                 }
+                
             }
         }
     }
