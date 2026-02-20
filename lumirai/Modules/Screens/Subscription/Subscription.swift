@@ -133,7 +133,7 @@ struct Subscription: View {
                                 textColor: .black,
                                 backgroundStyle: .solid(.white)
                             ){
-                                router.push(.expression)
+                                router.push(.login)
                             }
                         }
                         .padding(.vertical, 24)
