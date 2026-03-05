@@ -72,8 +72,8 @@ struct Subscription: View {
                             HaloLightLayer(opacity: 1.0  * coreOpacity, blur: 60 - 10)
                         }
                         .frame(
-                            width: geo.size.width * 0.35,
-                            height: geo.size.width * 0.35
+                            width: geo.size.width * 0.70,
+                            height: geo.size.width * 0.70
                         )
                         .scaleEffect(scale)
                         .offset(drift)
