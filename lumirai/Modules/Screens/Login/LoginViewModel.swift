@@ -23,22 +23,6 @@ class LoginViewModel: BaseViewModel {
         super.start()
     }
     
-    func loginGoogle(){
-        googleAuth.signIn { [weak self] result in
-            Task { @MainActor in
-                switch result {
-                case .success:
-                    AppUserDefaults.shared.isLoggedIn = true
-                    self?.isSuccsessLogin = true
-                case .cancelled:
-                    AppLogger.shared.log("User cancelled Google sign-in.")
-                    
-                case .failed(let error):
-                    AppLogger.shared.log("Failed to Google sign-in with error: \(error)")
-                }
-            }
-        }
-    }
     func loginApple(){
         appleAuth.signIn{ [weak self] result in
             switch result {
