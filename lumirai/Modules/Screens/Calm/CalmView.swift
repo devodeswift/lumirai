@@ -96,7 +96,6 @@ struct CalmView: View{
                 ZStack{
                     ParticleShimmerViewNew(
                         animate: $animate,
-                        scale: $scale,
                         countParticles: 35
                     )
                 }

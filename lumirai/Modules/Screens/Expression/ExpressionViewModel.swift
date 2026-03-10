@@ -31,7 +31,7 @@ class ExpressionViewModel: BaseViewModel {
     func getResponse(text: String) {
         getResponse = true
         
-        AppInfo.shared.updateUsageCountIfNeeded()
+        AppSettings.shared.updateUsageCountIfNeeded()
         let tempalteMemoryCallbackFile = JSON(TestDummyData.shared.getDummyJSON(fileName: "template-memory-callback"))
         let dataTemplateMemoryCallback = templatesMemoryCallbackModel(tempalteMemoryCallbackFile)
         let latesTextResultCountPerday = AppUserDefaults.shared.textResultCountPerDay

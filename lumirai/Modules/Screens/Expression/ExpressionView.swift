@@ -60,7 +60,6 @@ struct ExpressionView: View {
                 ZStack{
                         ParticleShimmerViewNew(
                             animate: $animate,
-                            scale: $scale,
                             countParticles: 35
                         )
 //                        .offset(driftParticle)
