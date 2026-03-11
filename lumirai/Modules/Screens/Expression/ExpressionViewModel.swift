@@ -23,10 +23,29 @@ class ExpressionViewModel: BaseViewModel {
     @Published var geminiAction: GeminiActionModel?
     @Published var textResponse: String = ""
     @Published var getResponse: Bool = false
+    @Published var scale: Double = 1.0
+    @Published var coreOpacity: Double = 0.85
+    @Published var duration: Double = 0.0
     private var emotion: EmotionState = .unknown
     private var hrvBaseline: Double?
     
     let apiService = APIService()
+    let breathing = BreathingEngine()
+    
+    override init(){
+        super.init()
+        breathing.onUpdate = { [weak self] scale, coreOpacity, duration in
+            DispatchQueue.main.async {
+                self?.scale = scale
+                self?.coreOpacity = coreOpacity
+                self?.duration = duration
+            }
+        }
+    }
+    
+    func startBreathing(){
+        breathing.inhale()
+    }
     
     func getResponse(text: String) {
         getResponse = true

@@ -40,14 +40,14 @@ struct Subscription: View {
                         x: geo.size.width / 2,
                         y: geo.size.height / 2
                     )
-                    // animasi scale
+                    
                     .onChange(of: vm.scale) { newValue in
                         withAnimation(.easeInOut(duration: vm.duration)) {
                             animatedScale = newValue
                         }
                     }
                     
-                    // animasi opacity
+                    
                     .onChange(of: vm.coreOpacity) { newValue in
                         withAnimation(.easeInOut(duration: vm.duration)) {
                             animatedCoreOpacity = newValue
