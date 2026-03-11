@@ -31,36 +31,19 @@ class SubscriptionViewModel: BaseViewModel {
         
     }
     
+    override init(){
+        super.init()
+        breathing.onUpdate = { [weak self] scale, coreOpacity, duration in
+            DispatchQueue.main.async {
+                self?.scale = scale
+                self?.coreOpacity = coreOpacity
+                self?.duration = duration
+            }
+        }
+    }
+    
     func startBreathing() {
-        inhale()
+        breathing.inhale()
     }
     
-    private func inhale() {
-        duration = breathing.inhaleDuration()
-
-        scale = AppSettings.shared.jitter(0.96, percent: 0.06)
-        coreOpacity = AppSettings.shared.jitter(0.76, percent: 0.05)
-
-        AppLogger.shared.log("cek Scale inhale: \(scale)")
-        AppLogger.shared.log("cek coreOpacity inhale: \(coreOpacity)")
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + duration) { [weak self] in
-            self?.exhale()
-        }
-    }
-    
-    private func exhale() {
-        duration = breathing.exhaleDuration()
-        
-        scale = AppSettings.shared.jitter(1.15, percent: 0.04)
-        coreOpacity = AppSettings.shared.jitter(0.88, percent: 0.04)
-        
-        AppLogger.shared.log("cek Scale exhale: \(scale)")
-        AppLogger.shared.log("cek coreOpacity exhale: \(coreOpacity)")
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + duration) { [weak self] in
-            self?.inhale()
-        }
-    }
-
 }

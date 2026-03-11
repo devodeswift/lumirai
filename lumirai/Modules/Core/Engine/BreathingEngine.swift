@@ -11,6 +11,8 @@ class BreathingEngine {
     let hr: Double = AppUserDefaults.shared.hearRate
     let hrv: Double = AppUserDefaults.shared.hrv
     
+    var onUpdate: ((Double, Double, Double) -> Void)?
+    
     private var getDurationInHale: Double{
         if hr > 80 && hrv < 30 {
             //agitated
@@ -44,7 +46,39 @@ class BreathingEngine {
     }
 
     func exhaleDuration() -> Double {
-        AppSettings.shared.jitter(getDurationInHale)
+        AppSettings.shared.jitter(getDurationExHale)
+    }
+    
+    func inhale() {
+        let duration = self.inhaleDuration()
+
+        let scale = AppSettings.shared.jitter(0.96, percent: 0.06)
+        let coreOpacity = AppSettings.shared.jitter(0.76, percent: 0.05)
+        
+        AppLogger.shared.log("cek Scale inhale: \(scale)")
+        AppLogger.shared.log("cek coreOpacity inhale: \(coreOpacity)")
+
+        onUpdate?(scale, coreOpacity, duration)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + duration) { [weak self] in
+            self?.exhale()
+        }
+    }
+    
+    func exhale() {
+        let duration = self.exhaleDuration()
+        
+        let scale = AppSettings.shared.jitter(1.15, percent: 0.04)
+        let coreOpacity = AppSettings.shared.jitter(0.88, percent: 0.04)
+        
+        AppLogger.shared.log("cek Scale exhale: \(scale)")
+        AppLogger.shared.log("cek coreOpacity exhale: \(coreOpacity)")
+        
+        onUpdate?(scale, coreOpacity, duration)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + duration) { [weak self] in
+            self?.inhale()
+        }
     }
     
 }

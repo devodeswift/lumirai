@@ -103,6 +103,8 @@ struct Subscription: View {
                         ){
                             router.push(.login)
                         }
+                        .disabled(selectedPlan.isEmpty)
+                        .opacity(selectedPlan.isEmpty ? 0.4 : 1)
                     }
                     .padding(.vertical, 24)
                     .padding(.horizontal, 20)
