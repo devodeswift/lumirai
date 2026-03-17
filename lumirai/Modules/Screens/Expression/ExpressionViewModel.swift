@@ -49,113 +49,130 @@ class ExpressionViewModel: BaseViewModel {
     
     func getResponse(text: String) {
         getResponse = true
-        
+        AppLogger.shared.log("getResponse: \(textResponse)")
         AppSettings.shared.updateUsageCountIfNeeded()
         let tempalteMemoryCallbackFile = JSON(TestDummyData.shared.getDummyJSON(fileName: "template-memory-callback"))
         let dataTemplateMemoryCallback = templatesMemoryCallbackModel(tempalteMemoryCallbackFile)
-        let latesTextResultCountPerday = AppUserDefaults.shared.textResultCountPerDay
+        let latesTextResultCountPerday = Set(
+            AppUserDefaults.shared
+                .getLastUserTexts(for: KeysAppUserDefaults.lastTextResultCountPerDay)
+                .map { $0.text }
+        )
+        AppLogger.shared.log("lastTextResultCountPerday: \(latesTextResultCountPerday)")
         if AppUserDefaults.shared.usageCountPerDay <= 30 && AppUserDefaults.shared.usageCountPerDay > 0 {
             let availableTextResultCountPerday = dataTemplateMemoryCallback.dataTemplates30Days
-                .filter { $0 != latesTextResultCountPerday }
+                .filter { !latesTextResultCountPerday.contains($0) }
+            
             if let result30Days = availableTextResultCountPerday.randomElement() {
                 textResponse = result30Days
-                AppUserDefaults.shared.textResultCountPerDay = result30Days
+                AppUserDefaults.shared.appendLastUserText(result30Days, for: KeysAppUserDefaults.lastTextResultCountPerDay)
             }
         } else if AppUserDefaults.shared.usageCountPerDay > 30 && AppUserDefaults.shared.usageCountPerDay <= 90 {
             let availableTextResultCountPerday = dataTemplateMemoryCallback.dataTemplates90Days
-                .filter { $0 != latesTextResultCountPerday }
+                .filter { !latesTextResultCountPerday.contains($0) }
             if let result90Days = availableTextResultCountPerday.randomElement() {
                 textResponse = result90Days
-                AppUserDefaults.shared.textResultCountPerDay = result90Days
+                AppUserDefaults.shared.appendLastUserText(result90Days, for: KeysAppUserDefaults.lastTextResultCountPerDay)
             }
         } else if AppUserDefaults.shared.usageCountPerDay > 90 {
             let availableTextResultCountPerday = dataTemplateMemoryCallback.dataTemplates120Days
-                .filter { $0 != latesTextResultCountPerday }
+                .filter { !latesTextResultCountPerday.contains($0) }
             if let result120Days = availableTextResultCountPerday.randomElement() {
                 textResponse = result120Days
-                AppUserDefaults.shared.textResultCountPerDay = result120Days
+                AppUserDefaults.shared.appendLastUserText(result120Days, for: KeysAppUserDefaults.lastTextResultCountPerDay)
+                
             }
         }
         
         let hour = Calendar.current.component(.hour, from: Date())
-        let latesTextResultHour = AppUserDefaults.shared.textResultHour
+        let latesTextResultHour = Set(
+            AppUserDefaults.shared
+                .getLastUserTexts(for: KeysAppUserDefaults.lastTextResultCountHour)
+                .map { $0.text }
+        )
         switch hour {
         case 5..<12:
             let templateMorningFile = JSON(TestDummyData.shared.getDummyJSON(fileName: "template-morning"))
             let dataTemplateMorning = templatesModel(templateMorningFile)
-            let availableTextResultMorningHours = dataTemplateMorning.dataTemplates.filter { $0 != latesTextResultHour }
+            let availableTextResultMorningHours = dataTemplateMorning.dataTemplates.filter { !latesTextResultHour.contains($0) }
             if let resultMorning = availableTextResultMorningHours.randomElement() {
                 textResponse += "|" + resultMorning
-                AppUserDefaults.shared.textResultHour = resultMorning
+                AppUserDefaults.shared.appendLastUserText(resultMorning, for: KeysAppUserDefaults.lastTextResultCountHour)
             }
             
         case 12..<17:
             let templateAfternoonFile = JSON(TestDummyData.shared.getDummyJSON(fileName: "template-afternoon"))
             let dataTemplateAfternoon = templatesModel(templateAfternoonFile)
-            let availableTextResultAfternoonHours = dataTemplateAfternoon.dataTemplates.filter { $0 != latesTextResultHour }
+            let availableTextResultAfternoonHours = dataTemplateAfternoon.dataTemplates.filter { !latesTextResultHour.contains($0) }
             if let resultAfternoon = availableTextResultAfternoonHours.randomElement() {
                 textResponse += "|" + resultAfternoon
-                AppUserDefaults.shared.textResultHour = resultAfternoon
+                AppUserDefaults.shared.appendLastUserText(resultAfternoon, for: KeysAppUserDefaults.lastTextResultCountHour)
             }
             
         case 17..<21:
             let templateEveningFile = JSON(TestDummyData.shared.getDummyJSON(fileName: "template-evening"))
             let dataTemplateEvening = templatesModel(templateEveningFile)
-            let availableTextResultEveningHours = dataTemplateEvening.dataTemplates.filter { $0 != latesTextResultHour }
+            let availableTextResultEveningHours = dataTemplateEvening.dataTemplates.filter { !latesTextResultHour.contains($0) }
             if let resultEvening = availableTextResultEveningHours.randomElement() {
                 textResponse += "|" + resultEvening
-                AppUserDefaults.shared.textResultHour = resultEvening
+                AppUserDefaults.shared.appendLastUserText(resultEvening, for: KeysAppUserDefaults.lastTextResultCountHour)
             }
         default:
             let templateNightFile = JSON(TestDummyData.shared.getDummyJSON(fileName: "template-night"))
             let dataTemplateNight = templatesModel(templateNightFile)
-            let availableTextResultNightHours = dataTemplateNight.dataTemplates.filter { $0 != latesTextResultHour }
+            let availableTextResultNightHours = dataTemplateNight.dataTemplates.filter { !latesTextResultHour.contains($0) }
             if let resultNight = availableTextResultNightHours.randomElement() {
                 textResponse += "|" + resultNight
-                AppUserDefaults.shared.textResultHour = resultNight
+                AppUserDefaults.shared.appendLastUserText(resultNight, for: KeysAppUserDefaults.lastTextResultCountHour)
             }
         }
         
         let emotionModeFromText = self.detectEmotion(text: text)
-        let emotionFromWatch = self.detectEmotionFromWatch()
-        var resultEmotion : EmotionMode = .none
-        
-        if emotionModeFromText != emotionFromWatch {
-            resultEmotion = emotionModeFromText
-        } else {
-            resultEmotion = emotionFromWatch
-        }
-        let latesTextResultEmotion = AppUserDefaults.shared.textResultEmotion
-        switch resultEmotion {
+//        let emotionFromWatch = self.detectEmotionFromWatch()
+        let latesTextResultEmotion = Set(
+            AppUserDefaults.shared
+                .getLastUserTexts(for: KeysAppUserDefaults.lastTextResultEmotion)
+                .map { $0.text }
+        )
+        switch emotionModeFromText {
         case .stress:
-            let templateStressFile = JSON(TestDummyData.shared.getDummyJSON(fileName: "template-stress"))
-            let dataTemplateStress = templatesModel(templateStressFile)
-            let availableTextResultStressEmotion = dataTemplateStress.dataTemplates.filter { $0 != latesTextResultEmotion }
-            if let resultStress = availableTextResultStressEmotion.randomElement() {
-                textResponse += "|" + resultStress
-                AppUserDefaults.shared.textResultEmotion = resultStress
+            if isConnectedWatch() || AppUserDefaults.shared.lastEmotionState == "stress" {
+                textResponse = "Stay with me."
+            } else {
+                let templateStressFile = JSON(TestDummyData.shared.getDummyJSON(fileName: "template-stress"))
+                let dataTemplateStress = templatesModel(templateStressFile)
+                let availableTextResultStressEmotion = dataTemplateStress.dataTemplates.filter { !latesTextResultEmotion.contains($0) }
+                if let resultStress = availableTextResultStressEmotion.randomElement() {
+                    textResponse += "|" + resultStress
+                    AppUserDefaults.shared.textResultEmotion = resultStress
+                    AppUserDefaults.shared.appendLastUserText(resultStress, for: KeysAppUserDefaults.lastTextResultEmotion)
+                }
             }
+            AppUserDefaults.shared.lastEmotionState = "stress"
+            
         case .fatigue:
             let templateFatigueFile = JSON(TestDummyData.shared.getDummyJSON(fileName: "template-fatigue"))
             let dataTemplateFatigue = templatesModel(templateFatigueFile)
-            let availableTextResultFatigueEmotion = dataTemplateFatigue.dataTemplates.filter { $0 != latesTextResultEmotion }
+            let availableTextResultFatigueEmotion = dataTemplateFatigue.dataTemplates.filter { !latesTextResultEmotion.contains($0) }
             if let resultFatigue = availableTextResultFatigueEmotion.randomElement() {
                 textResponse += "|" + resultFatigue
-                AppUserDefaults.shared.textResultEmotion = resultFatigue
+                AppUserDefaults.shared.appendLastUserText(resultFatigue, for: KeysAppUserDefaults.lastTextResultEmotion)
             }
+            AppUserDefaults.shared.lastEmotionState = "fatigue"
         case .existential:
             let templateExistentialFile = JSON(TestDummyData.shared.getDummyJSON(fileName: "template-existential"))
             let dataTemplateExistential = templatesModel(templateExistentialFile)
-            let availableTextResultExistentialEmotion = dataTemplateExistential.dataTemplates.filter { $0 != latesTextResultEmotion }
+            let availableTextResultExistentialEmotion = dataTemplateExistential.dataTemplates.filter { !latesTextResultEmotion.contains($0) }
             if let resultExistential = availableTextResultExistentialEmotion.randomElement() {
                 textResponse += "|" + resultExistential
-                AppUserDefaults.shared.textResultEmotion = resultExistential
+                AppUserDefaults.shared.appendLastUserText(resultExistential, for: KeysAppUserDefaults.lastTextResultEmotion)
             }
+            AppUserDefaults.shared.lastEmotionState = "existential"
         case .none:
             AppLogger.shared.log("no emotion")
         }
         
-        
+        AppLogger.shared.log("textResponse => \(textResponse)")
         
         var dataGeminiAction = GeminiActionModel()
         dataGeminiAction.action = "test"
@@ -234,18 +251,33 @@ class ExpressionViewModel: BaseViewModel {
     }
     
     func containsKeyword(in text: String, keywords: [String]) -> Bool {
-        let lower = text.lowercased()
-        return keywords.contains { lower.contains($0) }
+        let normalized = text.lowercased()
+        let words = Set(
+            normalized.components(
+                separatedBy: CharacterSet.alphanumerics.inverted
+            )
+        )
+
+        for keyword in keywords {
+            if keyword.contains(" ") {
+                if normalized.contains(keyword) {
+                    return true
+                }
+            } else {
+                if words.contains(keyword) {
+                    return true
+                }
+            }
+        }
+
+        return false
     }
     
     func detectEmotion(text: String) -> EmotionMode {
-        let stressKeywords = ["stress","stressed","anxious","anxiety","panic","worried","worry","overwhelmed","tense","nervous","pressure"]
-        let fatigueKeywords = ["tired","exhausted","sleep","sleepy","drained","weary","rest","heavy","fatigue"]
-        let existentialKeywords = ["why","meaning","purpose","point","lost","don't know","unclear","confused","empty"]
         
-        if containsKeyword(in: text, keywords: stressKeywords) { return .stress}
-        if containsKeyword(in: text, keywords: fatigueKeywords) { return .fatigue}
-        if containsKeyword(in: text, keywords: existentialKeywords) { return .existential }
+        if containsKeyword(in: text, keywords: EmotionKeywords.stress) { return .stress}
+        if containsKeyword(in: text, keywords: EmotionKeywords.fatigue) { return .fatigue}
+        if containsKeyword(in: text, keywords: EmotionKeywords.existential) { return .existential }
         
         return .none
     }
@@ -268,6 +300,10 @@ class ExpressionViewModel: BaseViewModel {
             return .fatigue
         }
         return .none
+    }
+    
+    func isConnectedWatch() -> Bool {
+        return WCSession.default.isPaired
     }
     
 }

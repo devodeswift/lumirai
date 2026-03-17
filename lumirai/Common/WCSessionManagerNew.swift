@@ -25,11 +25,11 @@ final class WCSessionManagerNew: NSObject, WCSessionDelegate, ObservableObject {
 
     private override init() {
         super.init()
-        print("🔥 WCSessionManagerNew INIT")
+        AppLogger.shared.log("🔥 WCSessionManagerNew INIT")
         if WCSession.isSupported() {
             WCSession.default.delegate = self
             WCSession.default.activate()
-            print("🔥 WCSessionManagerNew INIT support")
+            AppLogger.shared.log("🔥 WCSessionManagerNew INIT support")
         }
     }
 
@@ -40,12 +40,13 @@ final class WCSessionManagerNew: NSObject, WCSessionDelegate, ObservableObject {
         activationDidCompleteWith activationState: WCSessionActivationState,
         error: Error?
     ) {
-        print("📲 WCSession activated:", activationState.rawValue)
+        AppLogger.shared.log("📲 WCSession activated: \(activationState.rawValue)")
         let session = WCSession.default
 
-        print("isPaired:", session.isPaired)
-        print("isWatchAppInstalled:", session.isWatchAppInstalled)
-        print("activationState:", session.activationState.rawValue)
+        AppLogger.shared.log("isPaired: \(session.isPaired)")
+        AppLogger.shared.log("isWatchAppInstalled: \(session.isWatchAppInstalled)")
+        AppLogger.shared.log("activationState: \(session.activationState.rawValue)")
+        AppLogger.shared.log("reachable: \(session.isReachable)")
     }
     
     func session(

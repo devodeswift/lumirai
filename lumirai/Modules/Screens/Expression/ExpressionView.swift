@@ -91,6 +91,7 @@ struct ExpressionView: View {
                 }
             }
             .onAppear {
+                vm.textResponse = ""
                 vm.checkEmotionFromWatch()
                 isAnimating = true
                 if !isListening {
