@@ -187,4 +187,29 @@ class AppUserDefaults {
         setLastUserTexts(current, for: key)
     }
     
+    func incrementWeeklySession() -> Int {
+        let now = Date()
+        
+        let firstDate = defaults.object(forKey: KeysAppUserDefaults.firstSessionDate) as? Date
+        var count = defaults.integer(forKey: KeysAppUserDefaults.weeklySessionCount)
+        
+        if let firstDate = firstDate {
+            let diff = now.timeIntervalSince(firstDate)
+            
+            if diff <= 7 * 24 * 60 * 60 {
+                count += 1
+            } else {
+                count = 1
+                defaults.set(now, forKey: KeysAppUserDefaults.firstSessionDate)
+            }
+        } else {
+            count = 1
+            defaults.set(now, forKey: KeysAppUserDefaults.firstSessionDate)
+        }
+        
+        defaults.set(count, forKey: KeysAppUserDefaults.weeklySessionCount)
+        
+        return count
+    }
+    
 }

@@ -159,7 +159,8 @@ struct ExpressionView: View {
                         .padding(18)
                         .onChange(of: isFocused) { focused in
                             if !focused {
-                                vm.getResponse(text: text)
+//                                vm.getResponse(text: text)
+                                vm.sendTextEngine(text: text)
                             }
                         }
                     

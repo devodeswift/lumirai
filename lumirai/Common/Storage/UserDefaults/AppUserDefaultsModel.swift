@@ -22,6 +22,8 @@ enum KeysAppUserDefaults {
     static let lastTextResultCountPerDay = "last_text_result_count_per_day"
     static let lastTextResultCountHour = "last_text_result_count_hour"
     static let lastTextResultEmotion = "last_text_result_emotion"
+    static let weeklySessionCount = "weekly_session_count"
+    static let firstSessionDate = "first_session_date"
     
     
 }

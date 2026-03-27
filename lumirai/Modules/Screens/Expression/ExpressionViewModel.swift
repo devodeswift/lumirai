@@ -47,10 +47,27 @@ class ExpressionViewModel: BaseViewModel {
         breathing.inhale()
     }
     
+    func sendTextEngine(text: String) {
+        let sessionCount = AppUserDefaults.shared.incrementWeeklySession()
+        
+        let isLongText = isMoreThan12Words(text)
+        let isFrequentUser = sessionCount > 3
+        let isLateNight = isAfter10PM()
+        
+        if isLongText || isFrequentUser || isLateNight {
+            generateText(text: text)
+        } else {
+            getResponse(text: text)
+        }
+    }
+    
     func getResponse(text: String) {
         getResponse = true
         AppLogger.shared.log("getResponse: \(textResponse)")
         AppSettings.shared.updateUsageCountIfNeeded()
+        var duration = 180
+            
+        
         let tempalteMemoryCallbackFile = JSON(TestDummyData.shared.getDummyJSON(fileName: "template-memory-callback"))
         let dataTemplateMemoryCallback = templatesMemoryCallbackModel(tempalteMemoryCallbackFile)
         let latesTextResultCountPerday = Set(
@@ -138,6 +155,7 @@ class ExpressionViewModel: BaseViewModel {
         case .stress:
             if isConnectedWatch() || AppUserDefaults.shared.lastEmotionState == "stress" {
                 textResponse = "Stay with me."
+                duration = 12
             } else {
                 let templateStressFile = JSON(TestDummyData.shared.getDummyJSON(fileName: "template-stress"))
                 let dataTemplateStress = templatesModel(templateStressFile)
@@ -177,34 +195,35 @@ class ExpressionViewModel: BaseViewModel {
         var dataGeminiAction = GeminiActionModel()
         dataGeminiAction.action = "test"
         dataGeminiAction.echo = textResponse
-        dataGeminiAction.durationSec = 60
+        dataGeminiAction.durationSec = duration
         geminiAction = dataGeminiAction
     
     }
 
     func generateText(text: String) {
+        getResponse = true
         setLoading(true)
         defer { setLoading(false) }
-        let currentText = text
-        let emotion = self.emotion
-//        AppUserDefaults.shared.appendLastUserText(currentText)
-        let lastText = AppUserDefaults.shared.lastUserTexts.map {$0.text}.joined(separator: "\",\"")
-        AppLogger.shared.log("cek currentText => \(currentText)")
-        AppLogger.shared.log("cek emotion => \(emotion)")
-        AppLogger.shared.log("cek lasttext => \(lastText)")
+//        let currentText = text
+//        let emotion = self.emotion
+////        AppUserDefaults.shared.appendLastUserText(currentText)
+//        let lastText = AppUserDefaults.shared.lastUserTexts.map {$0.text}.joined(separator: "\",\"")
+//        AppLogger.shared.log("cek currentText => \(currentText)")
+//        AppLogger.shared.log("cek emotion => \(emotion)")
+//        AppLogger.shared.log("cek lasttext => \(lastText)")
         
         
         let request = RequestGeminiModel(
             system_instruction: SystemInstruction(
                 parts: [
-                    TextPart(text: "You are an empathetic health assistant. Analyze the user's emotions. The user will input their condition in JSON format (without markdown) using the following schema: \"{\"current_text\": string(user's current input in English), \"detect_emotion_hrv\": string (keywords: calm, sadness, anxiety, unknown), \"last_text\": array string(user's inputs from the last 48 hours in English)}\" Provide responses ONLY in JSON format (without markdown) with the following schema: {\"emotion\": string (calm, sadness, anxiety), \"echo\": string (a soothing emotional validation sentence in English), \"action\": string (action keywords such as: breathe, walk, call, journal), \"duration_sec\": integer (recommended duration in seconds), \"button\": string (short button label in English) }")
+                    TextPart(text: "You are LUMIRAi, an empathetic health assistant with a calm, somatic presence.\n\nYou analyze the user's emotional state quietly and gently, without over-explaining.\n\nThe user input will be a plain text message describing their current feelings.\n\nYour task:\n- Detect the user's dominant emotion from the text\n- Validate it with a short, soothing sentence\n- Suggest ONE simple, gentle action\n\nTone rules (Lumirai style):\n- Calm, soft, grounding\n- No questions\n- No explanations\n- No motivational language\n- No over-guidance\n- Keep it minimal and natural\n\nOutput rules:\n- emotion must be one of: calm, sadness, anxiety\n- echo must be a single short sentence (max 12–15 words)\n- echo must feel like quiet validation, not advice\n- action must be one of: breathe, walk, call, journal\n- duration_sec must be exactly 180\n- button must be very short (1–3 words)\n\nStrict output:\nReturn ONLY raw JSON.\nDo NOT wrap the response in markdown.\nDo NOT use ```json or ```.\nDo NOT add any extra text.\nOutput must start with { and end with }.\n\n{\"emotion\": string, \"echo\": string, \"action\": string, \"duration_sec\": 180, \"button\": string}")
                 ]
             ),
             contents: [
                 Content(
                     parts: [
                         TextPart(
-                            text: "{\"current_text\": \"\(currentText)\", \"detect_emotion_hrv\": \"\(emotion)\", \"last_text\":[\"\(lastText)]}"
+                            text: "\(text)"
                         )
                     ]
                 )
@@ -228,9 +247,6 @@ class ExpressionViewModel: BaseViewModel {
                 }
                 let dataResultAction = action
                 geminiAction = dataResultAction
-                if geminiAction != nil {
-                    AppUserDefaults.shared.appendLastUserText(currentText)
-                }
             } catch {
                 AppLogger.shared.log("Failed to fetch response: \(error)")
                 handleError()
@@ -304,6 +320,19 @@ class ExpressionViewModel: BaseViewModel {
     
     func isConnectedWatch() -> Bool {
         return WCSession.default.isPaired
+    }
+    
+    func isMoreThan12Words(_ text: String) -> Bool {
+        let words = text
+            .components(separatedBy: CharacterSet.whitespacesAndNewlines)
+            .filter { !$0.isEmpty }
+        
+        return words.count > 12
+    }
+    
+    func isAfter10PM() -> Bool {
+        let hour = Calendar.current.component(.hour, from: Date())
+        return hour >= 22
     }
     
 }
