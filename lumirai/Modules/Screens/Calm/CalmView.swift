@@ -96,7 +96,6 @@ struct CalmView: View{
                 ZStack{
                     ParticleShimmerViewNew(
                         animate: $animate,
-                        scale: $scale,
                         countParticles: 35
                     )
                 }
@@ -135,7 +134,7 @@ struct CalmView: View{
             .navigationBarBackButtonHidden()
             .onAppear {
                 vm.onFinished = {
-                    router.pop()
+                    router.push(.journal)
                     vm.stopTimer()
                 }
             }

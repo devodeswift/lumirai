@@ -10,27 +10,28 @@ import SwiftUI
 import Combine
 
 struct BaseView<Content: View, VM: BaseViewModel>: View {
-    
-    @StateObject private var viewModel: VM
+
+    @ObservedObject var viewModel: VM
     let content: (VM) -> Content
-    
+
     init(
         viewModel: VM,
         @ViewBuilder content: @escaping (VM) -> Content
     ) {
-        _viewModel = StateObject(wrappedValue: viewModel)
+        self.viewModel = viewModel
         self.content = content
     }
-    
+
     var body: some View {
         ZStack {
             content(viewModel)
                 .disabled(viewModel.isLoading)
+
             #if os(iOS)
             if viewModel.isLoading {
                 Color.black.opacity(0.3)
                     .ignoresSafeArea()
-                
+
                 ProgressView("Loading...")
                     .padding()
                     .background(.ultraThinMaterial)
@@ -38,7 +39,8 @@ struct BaseView<Content: View, VM: BaseViewModel>: View {
             }
             #endif
         }
-        .alert("Error",
+        .alert(
+            "Error",
             isPresented: Binding(
                 get: { viewModel.showError },
                 set: { viewModel.showError = $0 }
@@ -48,9 +50,5 @@ struct BaseView<Content: View, VM: BaseViewModel>: View {
         } message: {
             Text(viewModel.errorMessage)
         }
-                
     }
-    
-    
-    
 }

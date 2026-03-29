@@ -13,5 +13,6 @@ enum AppRoute: Hashable {
     case subscription
     case expression
     case calm(data: GeminiActionModel)
+    case journal
     
 }

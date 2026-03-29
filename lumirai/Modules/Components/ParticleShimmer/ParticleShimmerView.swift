@@ -162,7 +162,6 @@ struct ParticleShimmerViewNew: View {
     @State private var now: Date = .now
 
     @Binding var animate: Bool
-    @Binding var scale: CGFloat
 
     var countParticles: Int = 80
 
@@ -177,7 +176,6 @@ struct ParticleShimmerViewNew: View {
                         .frame(width: p.size, height: p.size)
                         .position(p.position(at: now))
                         .opacity(p.opacity(at: now))
-//                        .scaleEffect(scale)
                 }
             }
             .onAppear {

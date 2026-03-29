@@ -134,5 +134,82 @@ class AppUserDefaults {
             defaults.set(newValue, forKey: KeysAppUserDefaults.textResultEmotion)
         }
     }
+    var lastEmotionState: String {
+        get {
+            defaults.string(forKey: KeysAppUserDefaults.lastEmotionState) ?? ""
+        }
+        set {
+            defaults.set(newValue, forKey: KeysAppUserDefaults.lastEmotionState)
+        }
+    }
+    
+    func getLastUserTexts(for key: String) -> [LastUserText] {
+        
+        guard
+            let data = defaults.data(forKey: key),
+            let values = try? JSONDecoder().decode([LastUserText].self, from: data)
+        else {
+            return []
+        }
+
+        let cutoff = Date().addingTimeInterval(-48 * 60 * 60)
+
+        let validTexts = values.filter {
+            $0.savedAt >= cutoff
+        }
+
+        // cleanup expired
+        if validTexts.count != values.count {
+            if let data = try? JSONEncoder().encode(validTexts) {
+                defaults.set(data, forKey: key)
+            }
+        }
+
+        return validTexts
+    }
+    
+    func setLastUserTexts(_ values: [LastUserText], for key: String) {
+        if let data = try? JSONEncoder().encode(values) {
+            defaults.set(data, forKey: key)
+        }
+    }
+    
+    func appendLastUserText(_ text: String, for key: String) {
+        var current = getLastUserTexts(for: key)
+
+        current.append(
+            LastUserText(
+                text: text,
+                savedAt: Date()
+            )
+        )
+
+        setLastUserTexts(current, for: key)
+    }
+    
+    func incrementWeeklySession() -> Int {
+        let now = Date()
+        
+        let firstDate = defaults.object(forKey: KeysAppUserDefaults.firstSessionDate) as? Date
+        var count = defaults.integer(forKey: KeysAppUserDefaults.weeklySessionCount)
+        
+        if let firstDate = firstDate {
+            let diff = now.timeIntervalSince(firstDate)
+            
+            if diff <= 7 * 24 * 60 * 60 {
+                count += 1
+            } else {
+                count = 1
+                defaults.set(now, forKey: KeysAppUserDefaults.firstSessionDate)
+            }
+        } else {
+            count = 1
+            defaults.set(now, forKey: KeysAppUserDefaults.firstSessionDate)
+        }
+        
+        defaults.set(count, forKey: KeysAppUserDefaults.weeklySessionCount)
+        
+        return count
+    }
     
 }

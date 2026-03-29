@@ -31,11 +31,6 @@ struct LoginView: View {
                     ){
                         vm.loginApple()
                     }
-                    GlassButtonView(
-                        title: "Login With Google"
-                    ){
-                        vm.loginGoogle()
-                    }
                     Text("Your 7-day trial begins after sign-in")
                         .font(AppFonts.nunito(size: 16))
                         .foregroundColor(.white)

@@ -135,3 +135,62 @@ enum EmotionMode {
     case none
 }
 
+struct EmotionKeywords {
+    static let stress: [String] = [
+        "stress",
+        "stressed",
+        "anxious",
+        "anxiety",
+        "panic",
+        "worried",
+        "worry",
+        "overwhelmed",
+        "tense",
+        "nervous",
+        "pressure",
+        "overload",
+        "afraid",
+        "scared",
+        "too much",
+        "can’t breathe",
+        "heart racing"
+    ]
+    
+    static let fatigue: [String] = [
+        "tired",
+        "exhausted",
+        "sleep",
+        "sleepy",
+        "drained",
+        "weary",
+        "rest",
+        "heavy",
+        "fatigue",
+        "burnout",
+        "no energy",
+        "can’t focus"
+    ]
+    
+    static let existential: [String] = [
+        "why",
+        "meaning",
+        "purpose",
+        "point",
+        "lost",
+        "don't know",
+        "unclear",
+        "confused",
+        "empty",
+        "rumination",
+        "neutral",
+        "sad",
+        "empty",
+        "alone",
+        "lonely",
+        "overthinking",
+        "stuck in my head",
+        "thinking too much",
+        "hopeless"
+    ]
+}
+

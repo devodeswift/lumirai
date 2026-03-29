@@ -14,56 +14,56 @@ struct ExpressionView: View {
     @State private var text: String = ""
     @State private var isListening : Bool = false
     @State private var animate: Bool = false
-    @State private var float = false
     @State private var goToCalm = false
-    @StateObject private var breath = HaloBreathingController()
-    @State private var scale: CGFloat = 1.0
-    @State private var coreOpacity: Double = 0.85
-    @State private var drift: CGSize = .zero
-    @State private var driftParticle: CGSize = .zero
-    @State private var shimmer: CGFloat = 0
     @State private var textOpacity: Double = 0.0
     @State private var getResponse: Bool = false
-//    @State private var animate = false
+    @State private var animatedScale: CGFloat = 1.0
+    @State private var animatedCoreOpacity: Double = 0.85
     
     var body: some View {
         BaseView(viewModel: viewmodel) { vm in
             ZStack {
                 GeometryReader { geo in
-                    HaloDriftView {
-                        ZStack {
-                            HaloLightLayer(opacity: 0.35 * coreOpacity, blur: 60 + 15)
-                            HaloLightLayer(opacity: 0.6  * coreOpacity, blur: 60)
-                            HaloLightLayer(opacity: 1.0  * coreOpacity, blur: 60 - 10)
-                        }
-                        .frame(
-                            width: geo.size.width * 0.35,
-                            height: geo.size.width * 0.35
-                        )
-                        .scaleEffect(isListening
-                                     ? vm.haloPulse
-                                     : scale)
-                        .offset(drift)
+                    ZStack {
+                        HaloLightLayerView(opacity: 0.35 * animatedCoreOpacity, blur: 75)
+                        HaloLightLayerView(opacity: 0.6  * animatedCoreOpacity, blur: 60)
+                        HaloLightLayerView(opacity: 1.0  * animatedCoreOpacity, blur: 50)
                     }
+                    .frame(
+                        width: geo.size.width * 0.35,
+                        height: geo.size.width * 0.35
+                    )
+                    .scaleEffect(isListening
+                                 ? vm.haloPulse
+                                 : animatedScale)
+                    
                     .position(
                         x: geo.size.width / 2,
                         y: geo.size.height / 2
                     )
                     
+                    .onChange(of: vm.scale) { newValue in
+                        withAnimation(.easeInOut(duration: vm.duration)) {
+                            animatedScale = newValue
+                        }
+                    }
+                    
+                    
+                    .onChange(of: vm.coreOpacity) { newValue in
+                        withAnimation(.easeInOut(duration: vm.duration)) {
+                            animatedCoreOpacity = newValue
+                        }
+                    }
                     .onAppear {
-                        startBreathing()
-//                        startDrift()
-//                        startDriftParticle()
+                        vm.startBreathing()
                     }
                     
                 }
                 ZStack{
-                        ParticleShimmerViewNew(
-                            animate: $animate,
-                            scale: $scale,
-                            countParticles: 35
-                        )
-//                        .offset(driftParticle)
+                    ParticleView(
+                        animate: $animate,
+                        countParticles: 35
+                    )
                 }
                 VStack(alignment: .center) {
                     Text(vm.textTitle)
@@ -87,20 +87,13 @@ struct ExpressionView: View {
                         withAnimation(.spring(response: 0.35, dampingFraction: 0.82)) {
                             isListening.toggle()
                         }
-                        
                     }
-                    
-                    
-                    
-                    //                    bottomView(vm: vm)
-                    //                        .frame(maxWidth: .infinity, maxHeight: 40)
-                    //                        .padding(.horizontal, 20)
                 }
             }
             .onAppear {
+                vm.textResponse = ""
                 vm.checkEmotionFromWatch()
                 isAnimating = true
-                float = true
                 if !isListening {
                     animate = true
                 }
@@ -152,130 +145,6 @@ struct ExpressionView: View {
     }
     
     
-    func bottomView(vm: ExpressionViewModel) -> some View {
-        HStack {
-            if !isListening {
-                Button(action: {
-                    isFocused = true
-                }) {
-                Image(systemName: "text.bubble")
-                    .font(.system(size: 24, weight: .medium))
-                    .foregroundColor(.white.opacity(0.8))
-                    .frame(width: 50, height: 50)
-                }
-                .background(
-                    ZStack {
-                        Color.black.opacity(0.18)
-                            .blur(radius: 8)
-                            .cornerRadius(10)
-                        BlurView(style: .systemUltraThinMaterialDark)
-                            .cornerRadius(10)
-                            .opacity(1.0)
-                    }
-                )
-                .overlay(
-                    ZStack {
-                        RoundedRectangle(cornerRadius: .infinity)
-                            .stroke(Color.white.opacity(0.20), lineWidth: 0.7)
-                                    
-                        RoundedRectangle(cornerRadius: .infinity)
-                            .stroke(Color.white.opacity(0.12), lineWidth: 1)
-                            .blur(radius: 1.6)
-                            .clipShape(RoundedRectangle(cornerRadius: .infinity))
-                            .opacity(0.6)
-                    }
-                )
-                .clipShape(RoundedRectangle(cornerRadius: .infinity, style: .continuous))
-                .shadow(color: Color.white.opacity(0.13), radius: 2, x: 0, y: 0)
-                .compositingGroup()
-                .padding(8)
-                
-            }
-            
-            
-            Spacer()
-            Button(action: {
-                withAnimation(.spring(response: 0.35, dampingFraction: 0.82)) {
-                    isListening.toggle()
-                }
-            }) {
-                Image(systemName: !isListening ? "mic.fill" : "square.fill")
-                    .font(.system(size: 24, weight: .medium))
-                    .foregroundColor(.white.opacity(0.8))
-                    .frame(width: 50, height: 50)
-            }
-            .background(
-                ZStack {
-                    Color.black.opacity(0.18)
-                        .blur(radius: 8)
-                        .cornerRadius(10)
-                    BlurView(style: .systemUltraThinMaterialDark)
-                        .cornerRadius(10)
-                        .opacity(1.0)
-                }
-            )
-            .overlay(
-                ZStack {
-                    RoundedRectangle(cornerRadius: .infinity)
-                        .stroke(Color.white.opacity(0.20), lineWidth: 0.7)
-                                
-                    RoundedRectangle(cornerRadius: .infinity)
-                        .stroke(Color.white.opacity(0.12), lineWidth: 1)
-                        .blur(radius: 1.6)
-                        .clipShape(RoundedRectangle(cornerRadius: .infinity))
-                        .opacity(0.6)
-                }
-            )
-            .clipShape(RoundedRectangle(cornerRadius: .infinity, style: .continuous))
-            .shadow(color: Color.white.opacity(0.13), radius: 2, x: 0, y: 0)
-            .compositingGroup()
-            .padding(8)
-            Spacer()
-            if !isListening {
-                Button(action: {
-//                    goToCalm = true
-//                    vm.generateText(text: text)
-                    vm.getResponse(text: text)
-                }) {
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 24, weight: .medium))
-                    .foregroundColor(.white.opacity(0.8))
-                    .frame(width: 50, height: 50)
-                }
-                .background(
-                    ZStack {
-                        Color.black.opacity(0.18)
-                            .blur(radius: 8)
-                            .cornerRadius(10)
-                        BlurView(style: .systemUltraThinMaterialDark)
-                            .cornerRadius(10)
-                            .opacity(1.0)
-                    }
-                )
-                .overlay(
-                    ZStack {
-                        RoundedRectangle(cornerRadius: .infinity)
-                            .stroke(Color.white.opacity(0.20), lineWidth: 0.7)
-                                    
-                        RoundedRectangle(cornerRadius: .infinity)
-                            .stroke(Color.white.opacity(0.12), lineWidth: 1)
-                            .blur(radius: 1.6)
-                            .clipShape(RoundedRectangle(cornerRadius: .infinity))
-                            .opacity(0.6)
-                    }
-                )
-                .clipShape(RoundedRectangle(cornerRadius: .infinity, style: .continuous))
-                .shadow(color: Color.white.opacity(0.13), radius: 2, x: 0, y: 0)
-                .compositingGroup()
-                .padding(8)
-                .disabled(text.isEmpty)
-            }
-            
-            
-        }
-    }
-    
-    
     func textScroll(vm: ExpressionViewModel) -> some View {
         ScrollViewReader { proxy in
             ScrollView {
@@ -290,7 +159,8 @@ struct ExpressionView: View {
                         .padding(18)
                         .onChange(of: isFocused) { focused in
                             if !focused {
-                                vm.getResponse(text: text)
+//                                vm.getResponse(text: text)
+                                vm.sendTextEngine(text: text)
                             }
                         }
                     
@@ -314,11 +184,11 @@ struct ExpressionView: View {
             .mask(
                 LinearGradient(
                     gradient: Gradient(stops: [
-                                .init(color: .clear, location: 0),
-                                .init(color: .black, location: 0.12),
-                                .init(color: .black, location: 0.88),
-                                .init(color: .clear, location: 1.0)
-                            ]),
+                        .init(color: .clear, location: 0),
+                        .init(color: .black, location: 0.12),
+                        .init(color: .black, location: 0.88),
+                        .init(color: .clear, location: 1.0)
+                    ]),
                     startPoint: .top,
                     endPoint: .bottom
                 )
@@ -326,156 +196,7 @@ struct ExpressionView: View {
         }
         .frame(maxWidth: .infinity ,maxHeight: .infinity)
     }
-        
-    func bigHaloBreathing(vm: ExpressionViewModel) -> some View {
-        ZStack {
-            Circle()
-                .fill(
-                    RadialGradient(
-                        gradient: Gradient(colors: [
-                            Color(hex: "DCEBFF").opacity(0.08),
-                            Color(hex: "DCEBFF").opacity(0.04),
-                            .clear
-                        ]),
-                        center: .init(x: 0.46, y: 0.44),
-                        startRadius: 50,
-                        endRadius: 170
-                    )
-                )
-                .blur(radius: 24)
-                .blendMode(.screen)
-            
-            Circle()
-                .fill(
-                    RadialGradient(
-                        gradient: Gradient(colors: [
-                            Color(hex: "E6F0FF").opacity(0.22),
-                            Color(hex: "E6F0FF").opacity(0.10),
-                            .clear
-                        ]),
-                        center: .init(x: 0.52, y: 0.48),
-                        startRadius: 0,
-                        endRadius: 95
-                    )
-                )
-                .blur(radius: 12)
-                .blendMode(.screen)
-        }
-    }
     
-    private func jitter(_ base: Double, percent: Double = 0.08) -> Double {
-        let delta = base * percent
-        return base + Double.random(in: -delta...delta)
-    }
-    
-    private func startBreathing() {
-        inhale()
-    }
-
-    private func inhale() {
-        let duration = jitter(AppInfo.shared.getDurationInHale)
-        let targetScale = jitter(0.96, percent: 0.06)
-        let targetOpacity = jitter(0.76, percent: 0.05)
-        
-        withAnimation(.easeInOut(duration: duration)) {
-            scale = targetScale
-            coreOpacity = targetOpacity
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
-            exhale()
-        }
-    }
-
-    private func exhale() {
-        let duration = jitter(AppInfo.shared.getDurationExHale)
-        let targetScale = jitter(1.15, percent: 0.04)
-        let targetOpacity = jitter(0.88, percent: 0.04)
-        
-        withAnimation(.easeInOut(duration: duration)) {
-            scale = targetScale
-            coreOpacity = targetOpacity
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
-            inhale()
-        }
-    }
-    
-    private func startDrift() {
-        guard !isListening else {
-            drift = .zero
-            return
-        }
-        let duration = jitter(6.0, percent: 0.15)
-        
-        withAnimation(.easeInOut(duration: duration)) {
-            drift = CGSize(
-                width: Double.random(in: -40...40),
-                height: Double.random(in: -40...40)
-            )
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + duration * 0.9) {
-            startDrift()
-        }
-    }
-    
-    private func startDriftParticle() {
-        let duration = jitter(6, percent: 0.15)
-        Timer.scheduledTimer(withTimeInterval: duration, repeats: true) { _ in
-            withAnimation(.easeInOut(duration: duration)) {
-                driftParticle = CGSize(
-                    width: CGFloat.random(in: -20...20),
-                    height: CGFloat.random(in: -20...20)
-                )
-            }
-        }
-    }
-    
-    private func startShimmer() {
-        withAnimation(
-            .easeInOut(duration: jitter(6, percent: 0.3))
-        ) {
-            shimmer = Double.random(in: -0.015...0.015)
-        }
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-            startShimmer()
-        }
-    }
-    
-//    private func animateTextLifecycle(vm: ExpressionViewModel) {
-//        guard let text = vm.textResponse else { return }
-//        
-//        let charactersPerSecond: Double = 14
-//        let minStay: Double = 1.5
-//        let maxStay: Double = 6.0
-//        
-//        let stayDuration = min(
-//            max(Double(text.count) / charactersPerSecond, minStay),
-//            maxStay
-//        )
-//        
-//        // Fade in
-//        withAnimation(.easeInOut(duration: 0.25)) {
-//            textOpacity = 1.0
-//        }
-//        
-//        // Stay
-//        DispatchQueue.main.asyncAfter(deadline: .now() + stayDuration) {
-//            // Fade out
-//            withAnimation(.easeInOut(duration: 0.5)) {
-//                textOpacity = 0.0
-//            }
-//            
-//            // Clear text after fade out
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.55) {
-//                vm.textResponse = nil
-//            }
-//        }
-//    }
-
 }
 
 
@@ -485,12 +206,3 @@ struct ExpressionView: View {
     ExpressionView()
 }
 
-extension Animation {
-    func `repeat`(while expression: Bool, autoreverses: Bool = true) -> Animation {
-        if expression {
-            return self.repeatForever(autoreverses: autoreverses)
-        } else {
-            return self
-        }
-    }
-}
