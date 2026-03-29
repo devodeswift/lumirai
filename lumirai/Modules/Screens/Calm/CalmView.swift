@@ -134,7 +134,7 @@ struct CalmView: View{
             .navigationBarBackButtonHidden()
             .onAppear {
                 vm.onFinished = {
-                    router.pop()
+                    router.push(.journal)
                     vm.stopTimer()
                 }
             }

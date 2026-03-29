@@ -26,6 +26,9 @@ struct RootView: View {
                         ExpressionView()
                     case .calm(let data):
                         CalmView(resultAction: data)
+                    case .journal:
+                        JournalView()
+                    
                     }
                 }
         }
