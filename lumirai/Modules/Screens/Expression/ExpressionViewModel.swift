@@ -332,7 +332,7 @@ class ExpressionViewModel: BaseViewModel {
     
     func isAfter10PM() -> Bool {
         let hour = Calendar.current.component(.hour, from: Date())
-        return hour >= 22
+        return hour >= 22 && hour <= 23
     }
     
 }
