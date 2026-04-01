@@ -12,7 +12,7 @@ final class AuthInterceptor: RequestInterceptor {
     func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, Error>) -> Void ) {
         var request = urlRequest
         //set header
-        request.setValue("AIzaSyCOUC2c0YIpMHiDB-FjcVJEAwSfqFe55wI", forHTTPHeaderField: "x-goog-api-key")
+        request.setValue("AIzaSyAVFFZ-NgZ0gL3ws3z7MONUUn4ZQfYqkKg", forHTTPHeaderField: "x-goog-api-key")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         completion(.success(request))
     }
