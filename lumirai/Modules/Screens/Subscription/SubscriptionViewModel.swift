@@ -21,7 +21,7 @@ class SubscriptionViewModel: BaseViewModel {
     @Published var textSubscribeYearly: String = "Subscribe Yearly"
     @Published var textMonthlyPrice: String = "€14.99/month"
     @Published var textTrial: String = "Start Free Trial"
-    @Published var textDescription: String = "Unlimited session \n Apple Watch Companion \n Your emotional space"
+    @Published var textDescription: String = "Unlimited session \n Apple Watch Companion \n Your emotional space \nYour space continues."
     @Published var textCancel: String = "Cancel anytime · Privacy · Terms"
     
     let breathing = BreathingEngine()

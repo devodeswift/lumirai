@@ -80,17 +80,24 @@ struct Subscription: View {
                     
                     
                     VStack(spacing: 16) {
-                        
+    
                         RadioButtonView(
-                            title: "Yearly — €99 first year\nThen €129/year\n7-day free trial",
-                            isSelected: selectedPlan == "Yearly"
+                            title: "Yearly — €89 first year",
+                            description: "Then €129/year"
+                            ,information: "€7.42/month • 7-day free trial",
+                            isSelected: selectedPlan == "Yearly",
+                            isBestValue: true
                         ) {
                             selectedPlan = "Yearly"
                         }
                         
+                        
                         RadioButtonView(
-                            title: "Monthly — €14.99/month\n7-day free trial",
-                            isSelected: selectedPlan == "Monthly"
+                            title: "Monthly — €12.99/month",
+                            description: ""
+                            ,information: "7-day free trial",
+                            isSelected: selectedPlan == "Monthly",
+                            isBestValue: false
                         ) {
                             selectedPlan = "Monthly"
                         }
@@ -108,7 +115,7 @@ struct Subscription: View {
                     }
                     .padding(.vertical, 24)
                     .padding(.horizontal, 20)
-                    .frame(maxWidth: 400)
+                    .frame(maxWidth: .infinity)
                     
                     // 🌫 Glass background
                     .background(
