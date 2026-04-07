@@ -9,7 +9,10 @@ import Foundation
 import SwiftUI
 struct RadioButtonView: View {
     var title: String
+    var description: String
+    var information: String
     var isSelected: Bool
+    var isBestValue: Bool
     var action: () -> Void
     
     @State private var pulse = false
@@ -19,26 +22,53 @@ struct RadioButtonView: View {
             action()
             triggerPulse()
         }) {
-            HStack(spacing: 12) {
-                // Radio circle
-                Circle()
-                    .stroke(isSelected ? Color.blue.opacity(0.6) : Color.gray , lineWidth: 1)
-                    .background(
-                        Circle()
-                            .fill(isSelected ? Color.blue : .clear)
-                            .padding(4)
-                    )
-                    .frame(width: 22, height: 22)
-
-                Text(title)
-                    .font(AppFonts.playFairDisplayReg(size: 16))
-                    .foregroundColor(.white.opacity(0.9))
-                    .multilineTextAlignment(.leading)
-
-                Spacer()
+            ZStack(alignment: .topTrailing) {
+                HStack(spacing: 10) {
+                    Circle()
+                        .stroke(isSelected ? Color.blue.opacity(0.6) : Color.gray , lineWidth: 1)
+                        .background(
+                            Circle()
+                                .fill(isSelected ? Color.blue : .clear)
+                                .padding(4)
+                        )
+                        .frame(width: 22, height: 22)
+                    
+                    VStack (alignment: .leading, spacing: 2) {
+                        Text(title)
+                            .font(AppFonts.playFairDisplayReg(size: 16))
+                            .foregroundColor(.white.opacity(0.9))
+                            .multilineTextAlignment(.leading)
+                        if !description.isEmpty {
+                            Text(description)
+                                .font(AppFonts.playFairDisplayReg(size: 16))
+                                .foregroundColor(.white.opacity(0.9))
+                                .multilineTextAlignment(.leading)
+                        }
+                        
+                        
+                        Text(information)
+                            .font(AppFonts.playFairDisplayReg(size: 16))
+                            .foregroundColor(.white.opacity(0.9))
+                            .multilineTextAlignment(.leading)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .padding(16)
+                .frame(maxWidth: .infinity)
+                
+                if isBestValue {
+                    Text("Best Value")
+                        .font(AppFonts.playFairDisplayReg(size: 10))
+                        .foregroundColor(.black)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 4)
+                        .background(Color.white)
+                        .clipShape(Capsule())
+                        .padding(8)
+                }
+                
             }
-            .padding(16)
-            .frame(maxWidth: .infinity)
+            
         }
         .background(
             RoundedRectangle(cornerRadius: 14)
@@ -63,6 +93,24 @@ struct RadioButtonView: View {
         pulse = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
             pulse = false
+        }
+    }
+}
+
+#Preview {
+    ZStack {
+        Color.black.ignoresSafeArea()
+        
+        VStack {
+            RadioButtonView(
+                title: "Yearly — €89 first year Then €129/year kshdj jshdjsd jhsdjhsd jhsdjhsd",
+                description: "€7.42/month"
+                ,information: "7-day free trial",
+                isSelected: true,
+                isBestValue: true
+            ) {
+                
+            }
         }
     }
 }

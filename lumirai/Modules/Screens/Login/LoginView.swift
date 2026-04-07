@@ -17,7 +17,7 @@ struct LoginView: View {
         BaseView(viewModel: viewModel) { vm in
             ZStack {
                 VStack{
-                    Text("Welcome to LUMIRAi")
+                    Text("LUMIRAi")
                         .font(AppFonts.playFairDisplayReg(size: 24))
                         .foregroundColor(.white)
                         .padding(.top, 10)
